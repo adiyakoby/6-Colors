@@ -7,7 +7,7 @@ template<class Shape>
 class CompEasy : public Computer
 {
 public:
-	CompEasy(std::shared_ptr<Node<Shape>>  ptr_computer) :m_computer{ptr_computer} {
+	CompEasy(std::shared_ptr<Node<Shape>>  ptr_computer) :m_computer{ptr_computer} , Computer() {
 
 	}
 	virtual ~CompEasy();

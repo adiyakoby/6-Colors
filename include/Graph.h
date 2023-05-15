@@ -30,7 +30,6 @@ private:
 	sf::RenderWindow& m_ref_window;
 	std::vector<std::shared_ptr<Node<Shape>>> m_board;
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
-	Computer m_computer;
 
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
 	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
@@ -113,7 +112,5 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 
 	return lst;
 }
-
-
 
 
