@@ -4,7 +4,7 @@
 #include "Node.h" // has iostream, sfml graphic, memory, list
 #include <functional>
 #include <map>
-
+#include "Computer.h"
 
 template<class Shape>
 class Graph
@@ -36,6 +36,7 @@ private:
 	sf::RenderWindow& m_ref_window;
 	std::vector<std::shared_ptr<Node<Shape>>> m_board;
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
+	Computer m_computer;
 
 	std::shared_ptr<Node<Shape>> m_player_start;
 	std::shared_ptr<Node<Shape>> m_computer_start;
@@ -46,6 +47,7 @@ private:
 	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 	void connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func);
 	std::list<std::shared_ptr<Node<Shape>>> match_neighbors(std::vector <sf::Vector2f>& loc);
+
 };
 
 
@@ -126,6 +128,7 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 
 	return lst;
 }
+
 
 
 
