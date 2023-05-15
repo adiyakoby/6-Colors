@@ -36,8 +36,8 @@ public:
 	inline void set_neighbors(std::list<std::shared_ptr<Node<Shape>>>& neighbors) { m_neighbors = neighbors; };
 
 	//players func
-	void player_move(const sf::Color& color);
-	void EnemeyEasyModeMove(const sf::Color& color);
+	void find_nodes(const sf::Color& color ,const Owner& owner_type);
+
 	
 	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
@@ -78,28 +78,15 @@ inline bool Node<Shape>::set_owner(const Owner& type)
 }
 
 template<class Shape>
-inline void Node<Shape>::player_move(const sf::Color& color)
+inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
 {
 	m_visited = true;
-	if (m_owner == Player)
+	if (m_owner == owner_type)
 	{
 		for (auto& ea : m_neighbors)
-			if (!ea->is_visited() && ((ea->get_owner() == Player && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(Player))))
-				ea->player_move(color);
+			if (!ea->is_visited() && ((ea->get_owner() == owner_type && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(owner_type))))
+				ea->find_nodes(color, owner_type);
 		
-		this->set_color(color);
-	}
-}
-template<class Shape>
-inline void Node<Shape>::EnemeyEasyModeMove(const sf::Color& color)
-{
-	m_visited = true;
-	if (m_owner == Computer)
-	{
-		for (auto& ea : m_neighbors)
-			if (!ea->is_visited() && ((ea->get_owner() == Computer && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(Computer))))
-				ea->player_move(color);
-
 		this->set_color(color);
 	}
 }

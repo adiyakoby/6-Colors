@@ -31,9 +31,8 @@ public:
 	inline void draw() const { std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->draw(m_ref_window); }); };
 
 
-	void paint(const sf::Color& color) {
-		//std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {; });
-		m_player_start->player_move(color);
+	void attach_nodes(const sf::Color& color, const Owner &owner) {
+		m_player_start->find_nodes(color, owner);
 		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->un_visit(); });
 	};
 
