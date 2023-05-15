@@ -4,7 +4,7 @@
 #include "Node.h" // has iostream, sfml graphic, memory, list
 #include <functional>
 #include <map>
-
+#include "Computer.h"
 
 template<class Shape>
 class Graph
@@ -21,10 +21,8 @@ public:
 
 
 	inline void draw() const { std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->draw(m_ref_window); }); };
-
 	void paint(const sf::Vector2f& mouse_location) {
-		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->contain(mouse_location); });
-	};
+		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->contain(mouse_location); }); };
 
 
 private:
@@ -32,11 +30,13 @@ private:
 	sf::RenderWindow& m_ref_window;
 	std::vector<std::shared_ptr<Node<Shape>>> m_board;
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
+	Computer m_computer;
 
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
 	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 	void connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func);
 	std::list<std::shared_ptr<Node<Shape>>> match_neighbors(std::vector <sf::Vector2f>& loc);
+
 };
 
 
@@ -113,6 +113,7 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 
 	return lst;
 }
+
 
 
 
