@@ -10,13 +10,12 @@ template<class Shape>
 class Graph
 {
 public:
-	Graph(const Shape& shape, sf::RenderWindow& window, sf::RectangleShape& rectangle,
-		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> func) : m_ref_window{ window },
-		m_width{ (window.getSize().x * 0.75f) },
-		m_height{ (window.getSize().y * 0.75f) },
-		m_neighborFunc{ func }
+	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
+		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
+		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window }
 	{
-		this->make_Graph(shape, rectangle);
+		this->make_Graph(shape, rectangle, dist_func);
+		this->connect_nodes(neighbors_func);
 	};
 	~Graph() = default;
 
@@ -34,59 +33,65 @@ private:
 	std::vector<std::shared_ptr<Node<Shape>>> m_board;
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
 
-	float m_width;
-	float m_height;
-	void make_Graph(const Shape& shape, sf::RectangleShape& rectangle);
-	void connect_nodes();
+	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
+	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
+	void connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func);
 	std::list<std::shared_ptr<Node<Shape>>> match_neighbors(std::vector <sf::Vector2f>& loc);
-	std::function < std::vector<sf::Vector2f>(sf::Vector2f, float) > m_neighborFunc;
 };
 
 
+template<class Shape>
+inline bool Graph<Shape>::validation(const Shape& shape, const sf::RectangleShape& rectangle)
+{
+	//return rectangle.getGlobalBounds().contains(shape.getPosition());	
+	if (shape.getPosition().x < rectangle.getGlobalBounds().left + rectangle.getGlobalBounds().width
+		&& shape.getPosition().y > rectangle.getGlobalBounds().top 
+		&& shape.getPosition().y < rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height)
+		return true;
+	return false;
+}
 
 template<class Shape>
-inline void Graph<Shape>::make_Graph(const Shape& shape, sf::RectangleShape& rectangle)
+void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func)
 {
 	Shape temp(shape);
-	temp.setPosition(rectangle.getPosition().x * 0.5f, rectangle.getPosition().y * 0.5f);
+	temp.setOrigin(temp.getGlobalBounds().width, temp.getGlobalBounds().height);
+	temp.setPosition(rectangle.getGlobalBounds().left, rectangle.getGlobalBounds().top - shape.getGlobalBounds().height);
 	Shape prev_line(temp);
-	bool left = false;
 
-	float h{ 0 }, w{ 0 };
-	while (w < rectangle.getPosition().x * 2.f && h < rectangle.getPosition().y * 2.f)
-	{
+	bool right = true; // for positioning start of next line correctly.
+	float board_height{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
+		  board_width{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
 
-		
-		if (rectangle.getGlobalBounds().intersects(temp.getGlobalBounds()))
+	while (board_width > 0 && board_height >0 )
+	{	
+		if (validation(temp, rectangle))
 		{
 			std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
 			m_board.push_back(ptr);
 			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
 		}
-		w += shape.getRadius() * 2.f;
-		if (w >= m_width)
+		
+		board_width -= temp.getGlobalBounds().width;
+		if (board_width <= 0)
 		{
-			w = shape.getRadius() * 2.f;
-			h += shape.getRadius() * 2.f;
-			float x = (left == true ? prev_line.getPosition().x - prev_line.getRadius() * (std::sqrt(3.f) / 2.f) : prev_line.getPosition().x + prev_line.getRadius() * (std::sqrt(3.f) / 2.f));
-			temp.setPosition(x, prev_line.getPosition().y + (2.f * prev_line.getRadius()) * 3.f / 4.f);
+			board_width = temp.getGlobalBounds().width + rectangle.getGlobalBounds().width;
+			board_height -= temp.getGlobalBounds().height;
+			temp.setPosition(dist_func(prev_line, right, true));
 			prev_line = temp;
-			left = !left;
+			right = !right;
 		}
 		else
-			temp.setPosition(temp.getPosition().x + 2.f * temp.getRadius() * (std::sqrt(3.f) / 2.f), temp.getPosition().y);
-
+			temp.setPosition(dist_func(temp, true, false));
 	}
-
-	this->connect_nodes();
 }
 
 template<class Shape>
-inline void Graph<Shape>::connect_nodes()
+inline void Graph<Shape>::connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func)
 {
 	for (int i = 0; i < m_board.size(); i++)
 	{
-		std::vector<sf::Vector2f> neighb_location = m_neighborFunc(m_board.at(i)->get_position(), m_board.at(i)->get_radius()); // get possible neighbors
+		std::vector<sf::Vector2f> neighb_location = neighbors_func(m_board.at(i)->get_position(), m_board.at(i)->get_radius()); // get possible neighbors
 		std::list<std::shared_ptr<Node<Shape>>> obj_negibors = match_neighbors(neighb_location); // get list of neigbors
 		m_board.at(i)->set_neghibors(obj_negibors); // connect neighbors
 	}
@@ -105,3 +110,6 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 
 	return lst;
 }
+
+
+

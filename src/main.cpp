@@ -3,7 +3,28 @@
 
 #define TEST 0
 
+sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool & right, const bool &down) {
+	// MOVE RIGHT:
+	// temp.setPosition(temp.getPosition().x + 2.f * temp.getRadius() * (std::sqrt(3.f) / 2.f), temp.getPosition().y);
 
+	// Left or RIGHT for new line 
+	// float x = (left == true ? prev_line.getPosition().x - prev_line.getRadius() * (std::sqrt(3.f) / 2.f) : prev_line.getPosition().x + prev_line.getRadius() * (std::sqrt(3.f) / 2.f));
+	//.setPosition(x, prev_line.getPosition().y + (2.f * prev_line.getRadius()) * 3.f / 4.f);
+	sf::Vector2f ret_pos{shape.getPosition()};
+	if (!down)
+		ret_pos.x = ret_pos.x +  2.f * shape.getRadius() * (std::sqrt(3.f) / 2.f);
+	else if (down)
+	{
+		ret_pos.y = ret_pos.y + (2.f * shape.getRadius()) * 3.f / 4.f;
+		if (right)
+			ret_pos.x = ret_pos.x + shape.getRadius() * (std::sqrt(3.f) / 2.f);
+		else
+			ret_pos.x = ret_pos.x - (shape.getRadius() * (std::sqrt(3.f) / 2.f));
+
+	}
+	return ret_pos;
+
+};
 
 
 
@@ -103,10 +124,10 @@ int main()
 	sf::RectangleShape rectangle(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f));
 	rectangle.setOrigin(rectangle.getSize() / 2.f);
 	rectangle.setFillColor(sf::Color::Transparent);
-	rectangle.setOutlineColor(sf::Color::Black);
-	rectangle.setOutlineThickness(10.f);
+	rectangle.setOutlineColor(sf::Color::White);
+	rectangle.setOutlineThickness(5.f);
 	rectangle.setPosition(rectangle.getSize());
-
+	//rectangle.setFillColor(sf::Color::White);
 
 	std::cout << "coords: x:" << rectangle.getPosition().x << " y: " << rectangle.getPosition().y << std::endl;
 
@@ -114,17 +135,19 @@ int main()
 	temp.setOutlineColor(sf::Color::Black);
 	temp.setOutlineThickness(1.f);
 	temp.setPosition(100, 100);
-
-	/*	std::cout << temp.getPoint(0).x << std::endl;
-		std::cout << temp.getPoint(1).x << std::endl;
-		std::cout << temp.getPoint(2).x << std::endl;
-		std::cout << temp.getPoint(3).x << std::endl;
-		std::cout << temp.getPoint(4).x << std::endl;
-		std::cout << temp.getPoint(5).x << std::endl;*/
+	//temp.getOrigin()
+	//temp.setOrigin(temp.getRadius() / 2.f, temp.getRadius() / 2.f);
+	//temp.getGlobalBounds().width();
+	//temp.getGlobalBounds().height();
+	//rectangle.getGlobalBounds().top
+	
+	
 
 	sf::Vector2f circleSize(temp.getRadius() * 2, temp.getRadius() * 2);
 	temp.setOrigin(circleSize / 2.f);
-	Graph<sf::CircleShape> my_graph(temp, window, rectangle, neighbor_func);
+
+
+	Graph<sf::CircleShape> my_graph(temp, window, rectangle, neighbor_func, get_new_loc);
 
 
 
