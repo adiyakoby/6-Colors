@@ -17,7 +17,7 @@ public:
 	{
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
-		//m_player_start->set_color(sf::Color::White);
+		m_player_start->set_color(sf::Color::White);
 		m_computer_start->set_color(sf::Color::White);
 
 	};
@@ -81,16 +81,18 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 			std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
 			m_board.push_back(ptr);
 			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
-			m_player_start = ptr;
-			//m_computer_start = ptr;
+			if (m_board.size() > 0 && (m_computer_start.get() == nullptr || m_board.back()->getY() > m_player_start->getY()))
+				m_player_start = m_board.back();
 			
 				
 		}
 		board_width -= temp.getGlobalBounds().width;
-		
+		if (m_board.size() > 0 && m_computer_start.get() == nullptr) 
+				m_player_start = m_board.back() ;
 		if (board_width <= 0)
 		{
 			if (m_board.size() > 0 && m_computer_start.get() == nullptr) m_computer_start = m_board.back() ;
+
 			board_width = temp.getGlobalBounds().width  + rectangle.getGlobalBounds().width;
 			board_height -= temp.getGlobalBounds().height;
 			temp.setPosition(dist_func(prev_line, right, true));
@@ -100,6 +102,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		else
 			temp.setPosition(dist_func(temp, true, false));
 	}
+
 	
 }
 
