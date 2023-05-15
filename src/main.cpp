@@ -21,7 +21,8 @@ int main()
 	sf::RectangleShape sffs;
 	sffs.getGlobalBounds().width;
 	
-
+	std::vector<int> asas;
+	
 }
 
 #endif // TEST == 0

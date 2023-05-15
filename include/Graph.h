@@ -12,18 +12,22 @@ class Graph
 public:
 	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
 		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
-		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window }
+		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
+		m_player_start{nullptr}, m_computer_start{nullptr}
 	{
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
+		//m_player_start->set_color(sf::Color::White);
+		m_computer_start->set_color(sf::Color::White);
+
 	};
 	~Graph() = default;
 
 
 	inline void draw() const { std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->draw(m_ref_window); }); };
 
-	void paint(const sf::Vector2f& mouse_location) {
-		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->contain(mouse_location); });
+	void paint(const sf::Color& color) {
+		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {; });
 	};
 
 
@@ -33,6 +37,11 @@ private:
 	std::vector<std::shared_ptr<Node<Shape>>> m_board;
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
 
+	std::shared_ptr<Node<Shape>> m_player_start;
+	std::shared_ptr<Node<Shape>> m_computer_start;
+
+
+	//funcs
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
 	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 	void connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func);
@@ -54,9 +63,7 @@ template<class Shape>
 void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func)
 {
 	Shape temp(shape);
-	//temp.setOrigin(temp.getGlobalBounds().width, temp.getGlobalBounds().height);
-	//temp.setOrigin(temp.getGlobalBounds().left);
-	temp.setPosition(rectangle.getGlobalBounds().left, rectangle.getGlobalBounds().top - shape.getGlobalBounds().height);
+	temp.setPosition(rectangle.getGlobalBounds().left, rectangle.getGlobalBounds().top );
 	temp.setOutlineColor(sf::Color::Black);
 	temp.setOutlineThickness(1.f);
 
@@ -73,11 +80,16 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 			std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
 			m_board.push_back(ptr);
 			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
+			m_player_start = ptr;
+			//m_computer_start = ptr;
+			
+				
 		}
-		
 		board_width -= temp.getGlobalBounds().width;
+		
 		if (board_width <= 0)
 		{
+			if (m_board.size() > 0 && m_computer_start.get() == nullptr) m_computer_start = m_board.back() ;
 			board_width = temp.getGlobalBounds().width  + rectangle.getGlobalBounds().width;
 			board_height -= temp.getGlobalBounds().height;
 			temp.setPosition(dist_func(prev_line, right, true));
@@ -87,6 +99,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		else
 			temp.setPosition(dist_func(temp, true, false));
 	}
+	
 }
 
 template<class Shape>
