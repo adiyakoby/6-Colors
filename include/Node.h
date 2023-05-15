@@ -37,7 +37,7 @@ public:
 
 	//players func
 	void player_move(const sf::Color& color);
-
+	void EnemeyEasyModeMove(const sf::Color& color);
 	
 	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
@@ -87,6 +87,19 @@ inline void Node<Shape>::player_move(const sf::Color& color)
 			if (!ea->is_visited() && ((ea->get_owner() == Player && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(Player))))
 				ea->player_move(color);
 		
+		this->set_color(color);
+	}
+}
+template<class Shape>
+inline void Node<Shape>::EnemeyEasyModeMove(const sf::Color& color)
+{
+	m_visited = true;
+	if (m_owner == Computer)
+	{
+		for (auto& ea : m_neighbors)
+			if (!ea->is_visited() && ((ea->get_owner() == Computer && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(Computer))))
+				ea->player_move(color);
+
 		this->set_color(color);
 	}
 }
