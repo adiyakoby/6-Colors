@@ -6,7 +6,6 @@
 #include <list>
 
 enum Owner { Natural, Computer, Player };
-int COUNTER = 0;
 
 template<class Shape>
 class Node
@@ -83,11 +82,9 @@ private:
 template<class Shape>
 inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner{ Natural }
 {
-	COUNTER++;
-	std::cout << COUNTER << std::endl;
 	m_shape.setFillColor(rand_color());
-	m_shape.setOrigin(m_shape.getRadius(), m_shape.getRadius());
-	//std::cout << "coords: x:" << m_shape.getPosition().x << " y: " << m_shape.getPosition().y << std::endl;
+	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
+	//m_shape.setOrigin(m_shape.getRadius(), m_shape.getRadius());
 }
 
 

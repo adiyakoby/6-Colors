@@ -109,7 +109,7 @@ template<class Shape>
 				 break;
 			 }
 
-			 case sf::Event::MouseButtonReleased:
+			 case sf::Event::MouseButtonPressed:
 				 auto x = event.mouseButton.x;
 				 auto y = event.mouseButton.y;
 				 m_graph.paint(m_window.mapPixelToCoords({ x,y }));

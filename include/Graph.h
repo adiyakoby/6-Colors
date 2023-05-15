@@ -43,7 +43,7 @@ private:
 template<class Shape>
 inline bool Graph<Shape>::validation(const Shape& shape, const sf::RectangleShape& rectangle)
 {
-	if (shape.getPosition().x <= rectangle.getGlobalBounds().left + rectangle.getGlobalBounds().width + shape.getRadius()
+	if (shape.getPosition().x <= rectangle.getGlobalBounds().left + rectangle.getGlobalBounds().width 
 		&& shape.getPosition().y >= rectangle.getGlobalBounds().top 
 		&& shape.getPosition().y <= rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height)
 		return true;
@@ -63,7 +63,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 	Shape prev_line(temp);
 
 	bool right = true; // for positioning start of next line correctly.
-	float board_height{ temp.getGlobalBounds().height*2.f + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
+	float board_height{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
 		  board_width{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
 
 	while (board_height > 0 )
@@ -78,7 +78,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		board_width -= temp.getGlobalBounds().width;
 		if (board_width <= 0)
 		{
-			board_width = temp.getGlobalBounds().width*2.f  + rectangle.getGlobalBounds().width;
+			board_width = temp.getGlobalBounds().width  + rectangle.getGlobalBounds().width;
 			board_height -= temp.getGlobalBounds().height;
 			temp.setPosition(dist_func(prev_line, right, true));
 			prev_line = temp;
