@@ -1,6 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "Colors.h"
+#include "Computer.h"
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
@@ -55,7 +56,8 @@ public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" } , m_rect{set_rect()},
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 		m_graph(shape, m_window, m_rect , neighbor_func, get_new_loc) {
-		
+
+		;
 	}
 	~Controller () = default;
 
@@ -95,13 +97,14 @@ template<class Shape>
  {
 	 sf::Color color_clicked = m_color.check_for_color(x, y);
 	 if (color_clicked != sf::Color::Black)
-		 m_graph.paint(color_clicked);
+		 m_graph.attach_nodes(color_clicked, Player);
  }
 
  template<class Shape>
  inline void Controller<Shape>::run_game()
  {
-	 std::cout << "rungame\n";
+	 std::srand(time(0));
+
 	 while (m_window.isOpen()) {
 		 m_window.clear();
 
@@ -122,6 +125,7 @@ template<class Shape>
 
 			 case sf::Event::MouseButtonPressed:
 				 color_choosed(event.mouseButton.x, event.mouseButton.y);
+
 				 break;
 			 }
 		 }

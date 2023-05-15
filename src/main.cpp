@@ -11,17 +11,11 @@
 
 int main()
 {
-	sf::CircleShape circle(20.f, 6);
+	using Shape_type = sf::CircleShape;
+	Shape_type my_shape(15.f, 6);
 	
-	Controller<sf::CircleShape> control(circle);
+	Controller<Shape_type> control(my_shape);
 	control.run_game();
-	
-	sf::RectangleShape r;
-	r.setFillColor(sf::Color::Blue);
-	sf::RectangleShape sffs;
-	sffs.getGlobalBounds().width;
-	
-	std::vector<int> asas;
 	
 }
 
