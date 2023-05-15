@@ -5,17 +5,26 @@
 #define TEST 2
 
 sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool & right, const bool &down) {
+	// MOVE RIGHT:
+	// temp.setPosition(temp.getPosition().x + 2.f * temp.getRadius() * (std::sqrt(3.f) / 2.f), temp.getPosition().y);
 
-	sf::Vector2f ret_pos{};
+	// Left or RIGHT for new line 
+	// float x = (left == true ? prev_line.getPosition().x - prev_line.getRadius() * (std::sqrt(3.f) / 2.f) : prev_line.getPosition().x + prev_line.getRadius() * (std::sqrt(3.f) / 2.f));
+	//.setPosition(x, prev_line.getPosition().y + (2.f * prev_line.getRadius()) * 3.f / 4.f);
+	sf::Vector2f ret_pos{shape.getPosition()};
+	if (!down)
+		ret_pos.x = ret_pos.x +  2.f * shape.getRadius() * (std::sqrt(3.f) / 2.f);
+	else if (down)
+	{
+		ret_pos.y = ret_pos.y + (2.f * shape.getRadius()) * 3.f / 4.f;
+		if (right)
+			ret_pos.x = ret_pos.x + shape.getRadius() * (std::sqrt(3.f) / 2.f);
+		else
+			ret_pos.x = ret_pos.x - (shape.getRadius() * (std::sqrt(3.f) / 2.f));
 
-	if (right)
-		ret_pos.x += shape.getRadius() * (std::sqrt(3.f) / 2.f);
-	else
-		ret_pos.x -= shape.getRadius() * (std::sqrt(3.f) / 2.f);
-	if(down)
-		ret_pos.y += (2.f * shape.getRadius()) * 3.f / 4.f;
-	
+	}
 	return ret_pos;
+
 };
 
 

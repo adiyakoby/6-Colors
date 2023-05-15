@@ -59,38 +59,31 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 	temp.setPosition(rectangle.getGlobalBounds().left, rectangle.getGlobalBounds().top - shape.getGlobalBounds().height);
 	Shape prev_line(temp);
 
-	bool left = false; // for positioning start of next line correctly.
+	bool right = true; // for positioning start of next line correctly.
+	float board_height{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
+		  board_width{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
 
-	float h{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height }, w{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
-	std::cout << "w is :" << w << "  h is : " << h << std::endl;
-	std::cout << "top is is :" << rectangle.getGlobalBounds().top << "  height  is : " << rectangle.getGlobalBounds().height << std::endl;
-
-	while (w > 0 && h >0 )
+	while (board_width > 0 && board_height >0 )
 	{	
-		std::cout << "x is :" << temp.getPosition().x << "  y is : " << temp.getPosition().y << std::endl;
-
 		if (validation(temp, rectangle))
 		{
 			std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
 			m_board.push_back(ptr);
 			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
 		}
-		w -= temp.getGlobalBounds().width;//shape.getRadius() * 2.f;
 		
-		if (w <= 0)
+		board_width -= temp.getGlobalBounds().width;
+		if (board_width <= 0)
 		{
-			w = temp.getGlobalBounds().width + rectangle.getGlobalBounds().width;//shape.getRadius() * 2.f;
-			h -= temp.getGlobalBounds().height;  //shape.getRadius() * 2.f;
-			float x = (left == true ? prev_line.getPosition().x - prev_line.getRadius() * (std::sqrt(3.f) / 2.f) : prev_line.getPosition().x + prev_line.getRadius() * (std::sqrt(3.f) / 2.f));
-			temp.setPosition(x, prev_line.getPosition().y + (2.f * prev_line.getRadius()) * 3.f / 4.f);
+			board_width = temp.getGlobalBounds().width + rectangle.getGlobalBounds().width;
+			board_height -= temp.getGlobalBounds().height;
+			temp.setPosition(dist_func(prev_line, right, true));
 			prev_line = temp;
-			left = !left;
+			right = !right;
 		}
 		else
-			temp.setPosition(temp.getPosition().x + 2.f * temp.getRadius() * (std::sqrt(3.f) / 2.f), temp.getPosition().y);
-
+			temp.setPosition(dist_func(temp, true, false));
 	}
-
 }
 
 template<class Shape>
