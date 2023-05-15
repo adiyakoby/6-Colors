@@ -18,16 +18,12 @@ public:
 
 
 	void drawMenu(sf::RenderWindow& w);
-	void checkGlobalbounds(const float& x, const float& y) {
+
+	sf::Color check_for_color(const float& x, const float& y) {
 		for (auto& ea : m_buttons)
-		{
-			if (ea.getGlobalBounds().contains(x, y)) {
-
-				std::cout << "bnla\n";
-
-			}
-		}
-		
+			if (ea.getGlobalBounds().contains(x, y)) 
+				return ea.getFillColor();
+		return sf::Color::Black;
 	}
 
 

@@ -109,11 +109,10 @@ template<class Shape>
 				 break;
 			 }
 
-			 case sf::Event::MouseButtonReleased:
+			 case sf::Event::MouseButtonPressed:
 				 auto x = event.mouseButton.x;
 				 auto y = event.mouseButton.y;
-				 m_graph.paint(m_window.mapPixelToCoords({ x,y }));
-				 m_color.checkGlobalbounds(x, y);
+				 m_graph.paint(m_color.check_for_color(x, y));
 				 break;
 			 }
 		 }
