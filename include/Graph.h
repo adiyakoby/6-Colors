@@ -12,8 +12,6 @@ class Graph
 public:
 	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
 		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func) : m_ref_window{ window },
-		m_width{ (window.getSize().x * 0.75f) },
-		m_height{ (window.getSize().y * 0.75f) }
 	{
 		this->make_Graph(shape, rectangle);
 		this->connect_nodes(neighbors_func);
@@ -34,8 +32,6 @@ private:
 	std::vector<std::shared_ptr<Node<Shape>>> m_board;
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
 
-	float m_width;
-	float m_height;
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
 	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle);
 	void connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func);
