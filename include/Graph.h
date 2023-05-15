@@ -6,22 +6,6 @@
 #include <map>
 
 
-struct Vector2fComparator
-{
-	bool operator()(const sf::Vector2f& lhs, const sf::Vector2f& rhs) const
-	{
-		if (lhs.x < rhs.x)
-			return true;
-		else if (lhs.x > rhs.x)
-			return false;
-		else
-			return lhs.y < rhs.y;
-	}
-};
-
-
-
-
 template<class Shape>
 class Graph
 {
@@ -59,7 +43,6 @@ private:
 };
 
 
-//function<int(int,int)> arithmeticFcn
 
 template<class Shape>
 inline void Graph<Shape>::make_Graph(const Shape& shape, sf::RectangleShape& rectangle)
@@ -73,9 +56,10 @@ inline void Graph<Shape>::make_Graph(const Shape& shape, sf::RectangleShape& rec
 	while (w < rectangle.getPosition().x * 2.f && h < rectangle.getPosition().y * 2.f)
 	{
 
-		std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
+		
 		if (rectangle.getGlobalBounds().intersects(temp.getGlobalBounds()))
 		{
+			std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
 			m_board.push_back(ptr);
 			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
 		}
@@ -121,28 +105,3 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 
 	return lst;
 }
-
-
-
-
-/*auto func = [*this](const sf::Vector2f& pos) {
-
-	std::vector<sf::Vector2f> all_neighbors;
-	//left and right
-	all_neighbors.push_back(sf::Vector2f(pos.x +  m_board[0]->get_radius() * std::sqrt(3.f), pos.y));
-	all_neighbors.push_back(sf::Vector2f(pos.x -  m_board[0]->get_radius() * std::sqrt(3.f), pos.y));
-	//below
-	all_neighbors.push_back(sf::Vector2f(pos.x + m_board[0]->get_radius() * (std::sqrt(3.f) / 2.f), pos.y + m_board[0]->get_radius() * 1.5f));
-	all_neighbors.push_back(sf::Vector2f(pos.x - m_board[0]->get_radius() * (std::sqrt(3.f) / 2.f), pos.y + m_board[0]->get_radius() * 1.5f));
-	//above
-	all_neighbors.push_back(sf::Vector2f(pos.x + m_board[0]->get_radius() * (std::sqrt(3.f) / 2.f), pos.y - m_board[0]->get_radius() * 1.5f));
-	all_neighbors.push_back(sf::Vector2f(pos.x - m_board[0]->get_radius() * (std::sqrt(3.f) / 2.f), pos.y - m_board[0]->get_radius() * 1.5f));
-
-	for (auto& ea : all_neighbors) {
-		ea.x = std::round(ea.x);
-		ea.y = std::round(ea.y);
-	}
-
-	return all_neighbors;
-
-};*/
