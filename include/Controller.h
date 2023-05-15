@@ -2,8 +2,8 @@
 #include "Graph.h"
 #include "Colors.h"
 
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 800;
+const int WINDOW_WIDTH = 600;
+const int WINDOW_HEIGHT = 600;
 
 std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float radius) {
 
@@ -58,6 +58,8 @@ public:
 		
 	}
 	~Controller () = default;
+
+	
 	void run_game();
 	
 private:
@@ -70,6 +72,7 @@ private:
 	
 	//private functions
 	sf::RectangleShape set_rect();
+	void color_choosed(const unsigned int& x, const unsigned int& y);
 	
 };
 
@@ -86,6 +89,14 @@ template<class Shape>
 	rectangle.setPosition(rectangle.getSize());
 	return rectangle;
 }
+
+ template<class Shape>
+ inline void Controller<Shape>::color_choosed(const unsigned int& x, const unsigned int& y)
+ {
+	 sf::Color color_clicked = m_color.check_for_color(x, y);
+	 if (color_clicked != sf::Color::Black)
+		 m_graph.paint(color_clicked);
+ }
 
  template<class Shape>
  inline void Controller<Shape>::run_game()
@@ -110,9 +121,7 @@ template<class Shape>
 			 }
 
 			 case sf::Event::MouseButtonPressed:
-				 auto x = event.mouseButton.x;
-				 auto y = event.mouseButton.y;
-				 m_graph.paint(m_color.check_for_color(x, y));
+				 color_choosed(event.mouseButton.x, event.mouseButton.y);
 				 break;
 			 }
 		 }

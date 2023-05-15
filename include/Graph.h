@@ -17,8 +17,10 @@ public:
 	{
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
-		m_player_start->set_color(sf::Color::White);
-		m_computer_start->set_color(sf::Color::White);
+		m_player_start->set_owner(Player);
+		m_computer_start->set_owner(Computer);
+		//m_player_start->set_color(sf::Color::White);
+		//m_computer_start->set_color(sf::Color::White);
 
 	};
 	~Graph() = default;
@@ -26,8 +28,11 @@ public:
 
 	inline void draw() const { std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->draw(m_ref_window); }); };
 
+
 	void paint(const sf::Color& color) {
-		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {; });
+		//std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {; });
+		m_player_start->player_move(color);
+		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->un_visit(); });
 	};
 
 
@@ -113,7 +118,7 @@ inline void Graph<Shape>::connect_nodes(std::function <std::vector<sf::Vector2f>
 	{
 		std::vector<sf::Vector2f> neighb_location = neighbors_func(m_board.at(i)->get_position(), m_board.at(i)->get_radius()); // get possible neighbors
 		std::list<std::shared_ptr<Node<Shape>>> obj_negibors = match_neighbors(neighb_location); // get list of neigbors
-		m_board.at(i)->set_neghibors(obj_negibors); // connect neighbors
+		m_board.at(i)->set_neighbors(obj_negibors); // connect neighbors
 	}
 }
 
