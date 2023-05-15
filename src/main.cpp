@@ -4,7 +4,19 @@
 
 #define TEST 2
 
+sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool & right, const bool &down) {
 
+	sf::Vector2f ret_pos{};
+
+	if (right)
+		ret_pos.x += shape.getRadius() * (std::sqrt(3.f) / 2.f);
+	else
+		ret_pos.x -= shape.getRadius() * (std::sqrt(3.f) / 2.f);
+	if(down)
+		ret_pos.y += (2.f * shape.getRadius()) * 3.f / 4.f;
+	
+	return ret_pos;
+};
 
 
 std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float radius) {
@@ -164,7 +176,9 @@ int main()
 
 	sf::Vector2f circleSize(temp.getRadius() * 2, temp.getRadius() * 2);
 	temp.setOrigin(circleSize / 2.f);
-	Graph<sf::CircleShape> my_graph(temp, window, rectangle, neighbor_func);
+
+
+	Graph<sf::CircleShape> my_graph(temp, window, rectangle, neighbor_func, get_new_loc);
 
 
 

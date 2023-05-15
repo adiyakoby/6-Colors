@@ -11,9 +11,10 @@ class Graph
 {
 public:
 	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
-		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func) : m_ref_window{ window },
+		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
+		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window }
 	{
-		this->make_Graph(shape, rectangle);
+		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
 	};
 	~Graph() = default;
@@ -33,7 +34,7 @@ private:
 	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
 
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
-	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle);
+	void make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 	void connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func);
 	std::list<std::shared_ptr<Node<Shape>>> match_neighbors(std::vector <sf::Vector2f>& loc);
 };
@@ -51,7 +52,7 @@ inline bool Graph<Shape>::validation(const Shape& shape, const sf::RectangleShap
 }
 
 template<class Shape>
-void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rectangle)
+void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func)
 {
 	Shape temp(shape);
 	temp.setOrigin(temp.getGlobalBounds().width, temp.getGlobalBounds().height);
