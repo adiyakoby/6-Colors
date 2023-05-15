@@ -1,34 +1,48 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
+
+
+const int NUM_OF_COLORS = 6;
+
 class Colors
 {
-
-
 public:
-	Colors(sf::RectangleShape rect, const unsigned width, const unsigned height) : 
-		m_width{ width }, m_height{height}, m_frame { rect } {
-		this->setSize();
-		this->setLocation();
+	Colors(const unsigned width, const unsigned height) : m_buttons{},
+		m_width{ width }, m_height{height} {
+		this->create_vec();
 		this->setColors();
-		
-		
+			
 	}
 	~Colors() = default;
 
-	void setSize();
-	void setColors();
-	void setLocation();
-	void drawMenu( sf::RenderWindow &w);
+
+	void drawMenu(sf::RenderWindow& w);
+	void checkGlobalbounds(const float& x, const float& y) {
+		for (auto& ea : m_buttons)
+		{
+			if (ea.getGlobalBounds().contains(x, y)) {
+
+				std::cout << "bnla\n";
+
+			}
+		}
+		
+	}
+
+
+	
+
 private:
+	std::vector<sf::RectangleShape> m_buttons;
 	sf::RectangleShape m_frame;
-	sf::RectangleShape m_blue;
-	sf::RectangleShape m_red;
-	sf::RectangleShape m_green;
-	sf::RectangleShape m_pink;
-	sf::RectangleShape m_yellow;
-	sf::RectangleShape m_cyan;
+
 	unsigned int m_width;
 	unsigned int m_height;
+
+	void create_vec();
+	void setColors();
+	
 
 };
 

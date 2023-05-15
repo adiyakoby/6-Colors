@@ -43,10 +43,9 @@ private:
 template<class Shape>
 inline bool Graph<Shape>::validation(const Shape& shape, const sf::RectangleShape& rectangle)
 {
-	//return rectangle.getGlobalBounds().contains(shape.getPosition());	
-	if (shape.getPosition().x < rectangle.getGlobalBounds().left + rectangle.getGlobalBounds().width
-		&& shape.getPosition().y > rectangle.getGlobalBounds().top 
-		&& shape.getPosition().y < rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height)
+	if (shape.getPosition().x <= rectangle.getGlobalBounds().left + rectangle.getGlobalBounds().width + shape.getRadius()
+		&& shape.getPosition().y >= rectangle.getGlobalBounds().top 
+		&& shape.getPosition().y <= rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height)
 		return true;
 	return false;
 }
@@ -55,15 +54,19 @@ template<class Shape>
 void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rectangle, std::function <sf::Vector2f(Shape, bool, bool)> dist_func)
 {
 	Shape temp(shape);
-	temp.setOrigin(temp.getGlobalBounds().width, temp.getGlobalBounds().height);
+	//temp.setOrigin(temp.getGlobalBounds().width, temp.getGlobalBounds().height);
+	//temp.setOrigin(temp.getGlobalBounds().left);
 	temp.setPosition(rectangle.getGlobalBounds().left, rectangle.getGlobalBounds().top - shape.getGlobalBounds().height);
+	temp.setOutlineColor(sf::Color::Black);
+	temp.setOutlineThickness(1.f);
+
 	Shape prev_line(temp);
 
 	bool right = true; // for positioning start of next line correctly.
-	float board_height{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
+	float board_height{ temp.getGlobalBounds().height*2.f + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
 		  board_width{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
 
-	while (board_width > 0 && board_height >0 )
+	while (board_height > 0 )
 	{	
 		if (validation(temp, rectangle))
 		{
@@ -75,7 +78,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		board_width -= temp.getGlobalBounds().width;
 		if (board_width <= 0)
 		{
-			board_width = temp.getGlobalBounds().width + rectangle.getGlobalBounds().width;
+			board_width = temp.getGlobalBounds().width*2.f  + rectangle.getGlobalBounds().width;
 			board_height -= temp.getGlobalBounds().height;
 			temp.setPosition(dist_func(prev_line, right, true));
 			prev_line = temp;
