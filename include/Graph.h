@@ -63,7 +63,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 	float board_height{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
 		  board_width{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
 
-	while (board_width > 0 && board_height >0 )
+	while (board_width > 0 && board_height > 0 )
 	{	
 		if (validation(temp, rectangle))
 		{

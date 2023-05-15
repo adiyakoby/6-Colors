@@ -171,7 +171,7 @@ int main()
 
 	std::cout << "coords: x:" << rectangle.getPosition().x << " y: " << rectangle.getPosition().y << std::endl;
 
-	sf::CircleShape temp(15.f, 6);
+	sf::CircleShape temp(10.f, 6);
 	temp.setOutlineColor(sf::Color::Black);
 	temp.setOutlineThickness(1.f);
 	temp.setPosition(100, 100);
