@@ -6,6 +6,7 @@
 #include <list>
 
 enum Owner { Natural, Computer, Player };
+int COUNTER = 0;
 
 template<class Shape>
 class Node
@@ -69,6 +70,7 @@ private:
 	Shape m_shape;
 	std::list<std::shared_ptr<Node<Shape>>> m_neighbors;
 	Owner m_owner;
+	
 
 	//private funcs:
 	sf::Color rand_color() const;
@@ -81,7 +83,8 @@ private:
 template<class Shape>
 inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner{ Natural }
 {
-
+	COUNTER++;
+	std::cout << COUNTER << std::endl;
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getRadius(), m_shape.getRadius());
 	//std::cout << "coords: x:" << m_shape.getPosition().x << " y: " << m_shape.getPosition().y << std::endl;
