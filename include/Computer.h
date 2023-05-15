@@ -1,7 +1,6 @@
 #pragma once
 
-
-#include "Graph.h"
+#include "Node.h"
 
 template<class Shape>
 class Computer
