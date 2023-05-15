@@ -4,8 +4,7 @@
 #include "Node.h" // has iostream, sfml graphic, memory, list
 #include <functional>
 #include <map>
-#include "Computer.h"
-
+//#include "Computer.h"
 template<class Shape>
 class Graph
 {
@@ -39,7 +38,6 @@ private:
 
 	std::shared_ptr<Node<Shape>> m_player_start;
 	std::shared_ptr<Node<Shape>> m_computer_start;
-
 
 	//funcs
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
