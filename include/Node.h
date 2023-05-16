@@ -41,6 +41,15 @@ public:
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
 
 	
+	inline bool is_comp_attached() {
+		for (auto& ea : m_neighbors)
+		{
+			if (ea->get_owner() == Computer)
+				return true;
+		}
+	}
+
+
 	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
 	inline bool operator!=(const Node& other) const { return !(*this == other); };
@@ -111,6 +120,7 @@ sf::Color Node<Shape>::rand_color() const {
 
 template<class Shape>
 bool Node<Shape>::find_Color(const sf::Color& color) {
+	std::cout << "find_Color" << std::endl;
 
 	m_visited = true;
 	//bool ret_val{ false };

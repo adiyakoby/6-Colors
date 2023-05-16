@@ -1,7 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "Colors.h"
-#include "Enemy.h"
+#include "EasyMode.h"
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
@@ -55,9 +55,9 @@ class Controller
 public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
-		m_graph(shape, m_window, m_rect, neighbor_func, get_new_loc) 
+		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
 	{
-		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph.get_comp_node());
+		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph);
 	};
 	~Controller () = default;
 
@@ -69,7 +69,7 @@ private:
 	sf::RectangleShape m_rect;
 
 	Colors m_color;
-	Graph<Shape> m_graph;
+	std::shared_ptr<Graph<Shape>> m_graph;
 	
 	std::unique_ptr<Enemy> m_enemy;
 
@@ -98,7 +98,7 @@ template<class Shape>
  {
 	 sf::Color color_clicked = m_color.check_for_color(x, y);
 	 if (color_clicked != sf::Color::Black)
-		 m_graph.attach_nodes(color_clicked, Player);
+		 m_graph->attach_nodes(color_clicked, Player);
  }
 
  template<class Shape>
@@ -110,7 +110,7 @@ template<class Shape>
 		 m_window.clear();
 
 		 //drawing
-		 m_graph.draw();
+		 m_graph->draw();
 		 //m_window.draw(m_rect); // only for us
 		 m_color.drawMenu(m_window);
 		 m_window.display();
@@ -130,9 +130,9 @@ template<class Shape>
 				 do
 				 {
 					 comp_choice = m_enemy->action();
-					 m_graph.unvisit_nodes();
+					 m_graph->unvisit_nodes();
 				 } while (comp_choice == sf::Color::Black);
-				 m_graph.attach_nodes(comp_choice, Computer);
+				 m_graph->attach_nodes(comp_choice, Computer);
 				 break;
 			 }
 		 }

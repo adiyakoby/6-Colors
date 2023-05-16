@@ -3,9 +3,9 @@
 
 #include "Node.h" // has iostream, sfml graphic, memory, list
 #include <functional>
-#include <map>
 #include <unordered_map>
-#include "EasyMode.h"
+#include <set>
+
 
 // using std::hash in order to hash the std::pair for key in un_map
 struct pairhash {
@@ -47,6 +47,20 @@ public:
 	inline void draw() const { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); }); };
 
 	constexpr inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
+
+
+	std::vector<sf::Color> get_avail_color() 
+	{
+		std::vector<sf::Color> ret_set{};
+		for (auto& ea : m_map)
+		{
+			if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
+				ret_set.push_back(ea.second->get_color());
+		}
+		return ret_set;
+	};
+
+
 
 	void attach_nodes(const sf::Color& color, const Owner &owner) {
 		std::cout << "attach_nodes" << std::endl;
@@ -156,8 +170,6 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 			lst.push_back(it->second);
 
 	}
-	
+
 	return lst;
-}
-
-
+};

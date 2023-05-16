@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Node.h"
-
+//#include "Node.h"
+#include "Graph.h"
 
 class Enemy
 {
