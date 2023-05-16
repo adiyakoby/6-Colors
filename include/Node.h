@@ -51,7 +51,7 @@ private:
 	std::list<std::shared_ptr<Node<Shape>>> m_neighbors;
 	Owner m_owner;
 	bool m_visited;
-
+	
 	//private funcs:
 
 };
@@ -64,6 +64,7 @@ inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Natural),
 {
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
+	
 }
 
 
