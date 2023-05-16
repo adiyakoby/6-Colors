@@ -19,6 +19,14 @@ void Colors::drawMenu( sf::RenderWindow& window) {
 	
 }
 
+sf::Color Colors::check_for_color(const float& x, const float& y)
+{
+	for (auto& ea : m_buttons)
+		if (ea.getGlobalBounds().contains(x, y))
+			return ea.getFillColor();
+	return sf::Color::Black;
+}
+
 void Colors::create_vec()
 {
 	auto x = m_width / 2;

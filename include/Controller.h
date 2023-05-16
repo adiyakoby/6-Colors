@@ -53,12 +53,9 @@ class Controller
 {
 
 public:
-	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" } , m_rect{set_rect()},
+	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
-		m_graph(shape, m_window, m_rect , neighbor_func, get_new_loc) {
-
-		;
-	}
+		m_graph(shape, m_window, m_rect, neighbor_func, get_new_loc) {;};
 	~Controller () = default;
 
 	
@@ -110,7 +107,7 @@ template<class Shape>
 
 		 //drawing
 		 m_graph.draw();
-		 m_window.draw(m_rect); // only for us
+		 //m_window.draw(m_rect); // only for us
 		 m_color.drawMenu(m_window);
 		 m_window.display();
 

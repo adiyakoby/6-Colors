@@ -18,14 +18,13 @@ public:
 
 
 	void drawMenu(sf::RenderWindow& w);
+	void drawX() {
+		//sf::Lines line_a(100.f,100.f);
+		;
 
-	sf::Color check_for_color(const float& x, const float& y) {
-		for (auto& ea : m_buttons)
-			if (ea.getGlobalBounds().contains(x, y)) 
-				return ea.getFillColor();
-		return sf::Color::Black;
-	}
+	};
 
+	sf::Color check_for_color(const float& x, const float& y);
 
 	
 
