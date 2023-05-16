@@ -4,6 +4,18 @@
 #include "Node.h" // has iostream, sfml graphic, memory, list
 #include <functional>
 #include <map>
+#include <unordered_map>
+
+// using std::hash in order to hash the std::pair for key in un_map
+struct pairhash {
+public:
+	template <typename T1, typename T2>
+	std::size_t operator()(const std::pair<T1, T2>& x) const
+	{
+		return std::hash<T1>()(x.first) ^ std::hash<T2>()(x.second);
+	};
+};
+
 
 template<class Shape>
 class Graph
@@ -16,30 +28,29 @@ public:
 	{
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
+
 		m_player_start->set_owner(Player);
 		m_computer_start->set_owner(Computer);
-		//m_player_start->set_color(sf::Color::White);
-		//m_computer_start->set_color(sf::Color::White);
 
 	};
 	~Graph() = default;
 
 
-	inline void draw() const { std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->draw(m_ref_window); }); };
+	inline void draw() const { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); }); };
 
 
 	void attach_nodes(const sf::Color& color, const Owner &owner) {
 		m_player_start->find_nodes(color, owner);
-		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->un_visit(); });
+		std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
 	};
 
 
 private:
 
 	sf::RenderWindow& m_ref_window;
-	std::vector<std::shared_ptr<Node<Shape>>> m_board;
-	std::map < std::pair<float, float>, std::shared_ptr<Node<Shape>>> m_map;
+	std::unordered_map <std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash> m_map; // our graph of nodes
 
+	//players start nodes.
 	std::shared_ptr<Node<Shape>> m_player_start;
 	std::shared_ptr<Node<Shape>> m_computer_start;
 
@@ -76,24 +87,24 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 	float board_height{ temp.getGlobalBounds().height + rectangle.getGlobalBounds().top + rectangle.getGlobalBounds().height },
 		  board_width{ temp.getGlobalBounds().width + rectangle.getGlobalBounds().width };
 
+	std::shared_ptr<Node<Shape>> ptr{nullptr};
 	while (board_height > 0 )
 	{	
 		if (validation(temp, rectangle))
 		{
-			std::shared_ptr<Node<Shape>> ptr = std::make_shared<Node<Shape>>(temp);
-			m_board.push_back(ptr);
+			ptr = std::make_shared<Node<Shape>>(temp);
 			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
-			if (m_board.size() > 0 && (m_computer_start.get() == nullptr || m_board.back()->getY() > m_player_start->getY()))
-				m_player_start = m_board.back();
-			
-				
+			if (m_map.size() > 0 && (m_computer_start.get() == nullptr || ptr->getY() > m_player_start->getY()))
+				m_player_start = ptr;		
 		}
+
 		board_width -= temp.getGlobalBounds().width;
-		if (m_board.size() > 0 && m_computer_start.get() == nullptr) 
-				m_player_start = m_board.back() ;
+		//if(m_map.size() > 0 && m_computer_start.get() == nullptr)
+			//m_player_start = ptr;
+
 		if (board_width <= 0)
 		{
-			if (m_board.size() > 0 && m_computer_start.get() == nullptr) m_computer_start = m_board.back() ;
+			if (m_map.size() > 0 && m_computer_start.get() == nullptr) m_computer_start = ptr;
 
 			board_width = temp.getGlobalBounds().width  + rectangle.getGlobalBounds().width;
 			board_height -= temp.getGlobalBounds().height;
@@ -111,11 +122,11 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 template<class Shape>
 inline void Graph<Shape>::connect_nodes(std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func)
 {
-	for (int i = 0; i < m_board.size(); i++)
+	for (auto& ea : m_map)
 	{
-		std::vector<sf::Vector2f> neighb_location = neighbors_func(m_board.at(i)->get_position(), m_board.at(i)->get_radius()); // get possible neighbors
+		std::vector<sf::Vector2f> neighb_location = neighbors_func(ea.second->get_position(), ea.second->get_radius()); // get possible neighbors
 		std::list<std::shared_ptr<Node<Shape>>> obj_negibors = match_neighbors(neighb_location); // get list of neigbors
-		m_board.at(i)->set_neighbors(obj_negibors); // connect neighbors
+		ea.second->set_neighbors(obj_negibors); // connect neighbors
 	}
 }
 
