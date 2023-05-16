@@ -139,8 +139,9 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 		auto it = m_map.find(std::make_pair(std::round(ea.x), std::round(ea.y)));
 		if (it != m_map.end())
 			lst.push_back(it->second);
-	}
 
+	}
+	
 	return lst;
 }
 

@@ -6,7 +6,6 @@
 
 
 
-
 #if TEST == 0
 
 int main()
@@ -17,6 +16,7 @@ int main()
 	Controller<Shape_type> control(my_shape);
 	control.run_game();
 	
+
 }
 
 #endif // TEST == 0
