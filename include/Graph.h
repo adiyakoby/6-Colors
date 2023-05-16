@@ -5,6 +5,7 @@
 #include <functional>
 #include <map>
 #include <unordered_map>
+#include "EasyMode.h"
 
 // using std::hash in order to hash the std::pair for key in un_map
 struct pairhash {
@@ -31,6 +32,10 @@ public:
 
 		m_player_start->set_owner(Player);
 		m_computer_start->set_owner(Computer);
+		m_enemy = std::make_unique<EasyMode<Shape>>(m_computer_start);
+		
+		//m_player_start->set_color(sf::Color::White);
+		//m_computer_start->set_color(sf::Color::White);
 
 	};
 	~Graph() = default;
@@ -53,6 +58,7 @@ private:
 	//players start nodes.
 	std::shared_ptr<Node<Shape>> m_player_start;
 	std::shared_ptr<Node<Shape>> m_computer_start;
+	std::unique_ptr<Enemy> m_enemy;
 
 	//funcs
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
