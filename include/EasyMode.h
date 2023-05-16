@@ -13,9 +13,15 @@ public:
 	virtual ~EasyMode() = default;
 
 	virtual sf::Color action() override {
-		
-		
+
 		sf::Color color;
+	/*	bool found{ false };
+		while (!found)
+		{
+			color = m_computer->rand_color();
+			found = m_computer->find_Color(color);
+		}		*/
+
 		return color;
 	}
 private:

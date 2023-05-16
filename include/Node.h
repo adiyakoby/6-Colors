@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <list>
+#include <algorithm>
 
 enum Owner { Natural, Computer, Player };
 
@@ -16,6 +17,7 @@ public:
 
 
 	//getters
+	sf::Color rand_color() const;
 	inline sf::Color get_color() const { return m_shape.getFillColor(); };
 	inline sf::Vector2f get_position() const { return m_shape.getPosition(); };
 	inline float getX() const { return m_shape.getPosition().x; };
@@ -24,7 +26,7 @@ public:
 	inline void draw(sf::RenderWindow& window) const { window.draw(m_shape); };
 	inline bool is_visited() const { return m_visited; };
 	inline Owner get_owner() const { return m_owner; };
-
+	bool find_Color(const sf::Color &color);
 	
 	
 	// setters
@@ -51,7 +53,6 @@ private:
 	bool m_visited;
 
 	//private funcs:
-	sf::Color rand_color() const;
 
 };
 
@@ -104,3 +105,41 @@ sf::Color Node<Shape>::rand_color() const {
 	else if (color == 4) return sf::Color::Cyan;
 	else return sf::Color::Magenta;
 };
+
+
+//template<class Shape>
+//bool Node<Shape>::find_Color(const sf::Color& color) {
+//
+//	m_visited = true;
+//	bool retval{ false };
+//	int rand_neighb = rand() % m_neighbors.size();
+//	auto it = std::next(m_neighbors.begin(), rand_neighb);
+//	if (it->get()->get_owner() == Natural && it->get()->get_color() == color))
+//			return true;
+//
+//	//if (it->get()->get_owner() == Natural)
+//	//	return false;
+//
+//	if (!it->get()->is_visited() && it->get->get_owner() == Computer)
+//		retval = it->get()->find_Color(color);
+//
+//	
+//}
+//template<class Shape>
+//bool Node<Shape>::find_Color(const sf::Color& color) {
+//
+//	m_visited = true;
+//	bool retval{ false };
+//	int rand_neighb = rand() % m_neighbors.size();
+//	auto it = std::next(m_neighbors.begin(), rand_neighb);
+//	if (it->get()->get_owner() == Natural && it->get()->get_color() == color))
+//			return true;
+//
+//	//if (it->get()->get_owner() == Natural)
+//	//	return false;
+//
+//	if (!it->get()->is_visited() && it->get->get_owner() == Computer)
+//		retval = it->get()->find_Color(color);
+//
+//	
+//}
