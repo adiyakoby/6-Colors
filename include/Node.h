@@ -15,60 +15,40 @@ public:
 	~Node() = default;
 
 
+	//getters
 	inline sf::Color get_color() const { return m_shape.getFillColor(); };
 	inline sf::Vector2f get_position() const { return m_shape.getPosition(); };
 	inline float getX() const { return m_shape.getPosition().x; };
 	inline float getY() const { return m_shape.getPosition().y; };
 	inline float get_radius() const { return m_shape.getRadius(); };
 	inline void draw(sf::RenderWindow& window) const { window.draw(m_shape); };
+	inline bool is_visited() const { return m_visited; };
+	inline Owner get_owner() const { return m_owner; };
 
-	inline bool change_owner(Owner type) {
-		if (m_owner == Natural)
-		{
-			m_owner = type;
-			return true;
-		}
-		return false;
-	};
-
-	inline void set_color(const sf::Color& color) { m_shape.setFillColor(color); };
+	
+	
+	// setters
+	void set_color(const sf::Color& color) { m_shape.setFillColor(color); };
 	inline void set_position(const sf::Vector2f& pos) { m_shape.setPosition(pos); };
 	inline void set_position(const float& f1, const float& f2) { m_shape.setPosition(sf::Vector2f(f1, f2)); };
+	inline void un_visit() { m_visited = false; };
+	bool set_owner(const Owner& type);
+	inline void set_neighbors(std::list<std::shared_ptr<Node<Shape>>>& neighbors) { m_neighbors = neighbors; };
 
-	void contain(const sf::Vector2f& mouse_loc) {
-		if (m_shape.getGlobalBounds().contains(mouse_loc))
-		{
-			m_owner = Player;
-			std::cout << "my color is : " << (m_shape.getFillColor() == sf::Color::Yellow ? "Yellow" : "Else") << std::endl;
-			for (auto& ea : m_neighbors)
-			{
-				std::cout << "my color is : " << (ea->get_color() == sf::Color::Yellow ? "Yellow" : "Else") << std::endl;
-				if (ea->get_color() == m_shape.getFillColor() && ea->change_owner(Player))
-				{
+	//players func
+	void find_nodes(const sf::Color& color ,const Owner& owner_type);
 
-					std::cout << "inside if " << std::endl;
-					ea->set_color(sf::Color::White);
-					this->set_color(sf::Color::White);
-				}
-
-
-			}
-		}
-
-	};
-
-
-	inline void set_neghibors(std::list<std::shared_ptr<Node<Shape>>>& neighbors) { m_neighbors = neighbors; };
-
+	
+	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
 	inline bool operator!=(const Node& other) const { return !(*this == other); };
-
 	inline bool operator<(const Node& other) const { return  (m_shape.getPosition().x < other.getPosition().x ? true : false); }
 
 private:
 	Shape m_shape;
 	std::list<std::shared_ptr<Node<Shape>>> m_neighbors;
 	Owner m_owner;
+	bool m_visited;
 
 	//private funcs:
 	sf::Color rand_color() const;
@@ -79,12 +59,36 @@ private:
 
 
 template<class Shape>
-inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner{ Natural }
+inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Natural), m_visited{false}
 {
-
 	m_shape.setFillColor(rand_color());
-	m_shape.setOrigin(m_shape.getRadius(), m_shape.getRadius());
-	//std::cout << "coords: x:" << m_shape.getPosition().x << " y: " << m_shape.getPosition().y << std::endl;
+	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
+}
+
+
+template<class Shape>
+inline bool Node<Shape>::set_owner(const Owner& type)
+{
+	if (m_owner == type) return true;
+	if (m_owner == Natural) {
+		m_owner = type;
+		return true;
+	}
+	return false;
+}
+
+template<class Shape>
+inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
+{
+	m_visited = true;
+	if (m_owner == owner_type)
+	{
+		for (auto& ea : m_neighbors)
+			if (!ea->is_visited() && ((ea->get_owner() == owner_type && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(owner_type))))
+				ea->find_nodes(color, owner_type);
+		
+		this->set_color(color);
+	}
 }
 
 
