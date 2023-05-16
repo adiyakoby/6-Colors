@@ -91,7 +91,6 @@ int main()
 int main()
 {
 	srand(time(NULL));
-	srand(20);
 	sf::RenderWindow window(sf::VideoMode(800, 800), "TITLE");
 
 	sf::RectangleShape rectangle(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f));

@@ -55,7 +55,10 @@ class Controller
 public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
-		m_graph(shape, m_window, m_rect, neighbor_func, get_new_loc) {;};
+		m_graph(shape, m_window, m_rect, neighbor_func, get_new_loc) 
+	{
+		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph.get_comp_node());
+	};
 	~Controller () = default;
 
 	
@@ -68,7 +71,8 @@ private:
 	Colors m_color;
 	Graph<Shape> m_graph;
 	
-	
+	std::unique_ptr<Enemy> m_enemy;
+
 	//private functions
 	sf::RectangleShape set_rect();
 	void color_choosed(const unsigned int& x, const unsigned int& y);
@@ -100,7 +104,7 @@ template<class Shape>
  template<class Shape>
  inline void Controller<Shape>::run_game()
  {
-	 std::srand(time(0));
+	 //std::srand(26665656);
 
 	 while (m_window.isOpen()) {
 		 m_window.clear();
@@ -122,7 +126,13 @@ template<class Shape>
 
 			 case sf::Event::MouseButtonPressed:
 				 color_choosed(event.mouseButton.x, event.mouseButton.y);
-
+				 sf::Color comp_choice;
+				 do
+				 {
+					 comp_choice = m_enemy->action();
+					 m_graph.unvisit_nodes();
+				 } while (comp_choice == sf::Color::Black);
+				 m_graph.attach_nodes(comp_choice, Computer);
 				 break;
 			 }
 		 }

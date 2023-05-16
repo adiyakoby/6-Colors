@@ -82,6 +82,7 @@ inline bool Node<Shape>::set_owner(const Owner& type)
 template<class Shape>
 inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
 {
+	std::cout << "find_nodes" << std::endl;
 	m_visited = true;
 	if (m_owner == owner_type)
 	{
@@ -108,24 +109,49 @@ sf::Color Node<Shape>::rand_color() const {
 };
 
 
-//template<class Shape>
-//bool Node<Shape>::find_Color(const sf::Color& color) {
-//
-//	m_visited = true;
-//	bool retval{ false };
-//	int rand_neighb = rand() % m_neighbors.size();
-//	auto it = std::next(m_neighbors.begin(), rand_neighb);
-//	if (it->get()->get_owner() == Natural && it->get()->get_color() == color))
-//			return true;
-//
-//	//if (it->get()->get_owner() == Natural)
-//	//	return false;
-//
-//	if (!it->get()->is_visited() && it->get->get_owner() == Computer)
-//		retval = it->get()->find_Color(color);
-//
-//	
-//}
+template<class Shape>
+bool Node<Shape>::find_Color(const sf::Color& color) {
+
+	m_visited = true;
+	//bool ret_val{ false };
+	
+	for (auto& ea : m_neighbors)
+	{
+		if (ea->get_owner() == Natural && ea->get_color() == color)
+		{
+			m_visited = false;
+			return true;
+		}
+			
+	}
+	//auto it = std::next(m_neighbors.begin(), rand() % m_neighbors.size());
+	//if (it->get()->get_owner() == Natural && it->get()->get_color() == color)
+		//return true;
+
+	//if (it->get()->get_owner() == Natural)
+	//	return false;
+
+	for (auto& ea : m_neighbors)
+	{
+		if (ea->get_owner() == Computer && !ea->is_visited())
+			if (ea->find_Color(color))
+			{
+				m_visited = false;
+				return true;
+			}
+				
+	}
+
+	//if (ret_val) return true;
+	//else {
+	//	it = std::next(m_neighbors.begin(), rand() % m_neighbors.size());
+	//	ret_val = it->get()->find_Color(color);
+	//}
+	m_visited = false;
+	return false;
+}
+
+
 //template<class Shape>
 //bool Node<Shape>::find_Color(const sf::Color& color) {
 //

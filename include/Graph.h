@@ -27,12 +27,14 @@ public:
 		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
 		m_player_start{nullptr}, m_computer_start{nullptr}
 	{
+		std::srand(time(NULL));
+
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
 
 		m_player_start->set_owner(Player);
 		m_computer_start->set_owner(Computer);
-		m_enemy = std::make_unique<EasyMode<Shape>>(m_computer_start);
+		
 		
 		//m_player_start->set_color(sf::Color::White);
 		//m_computer_start->set_color(sf::Color::White);
@@ -40,12 +42,19 @@ public:
 	};
 	~Graph() = default;
 
+	void unvisit_nodes() { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); }); };
 
 	inline void draw() const { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); }); };
 
+	constexpr inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 
 	void attach_nodes(const sf::Color& color, const Owner &owner) {
-		m_player_start->find_nodes(color, owner);
+		std::cout << "attach_nodes" << std::endl;
+		if(owner == Player)
+			m_player_start->find_nodes(color, owner);
+		else if(owner == Computer)
+			m_computer_start->find_nodes(color, owner);
+
 		std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
 	};
 
@@ -58,7 +67,7 @@ private:
 	//players start nodes.
 	std::shared_ptr<Node<Shape>> m_player_start;
 	std::shared_ptr<Node<Shape>> m_computer_start;
-	std::unique_ptr<Enemy> m_enemy;
+	
 
 	//funcs
 	inline bool validation(const Shape& shape, const sf::RectangleShape& rectangle);
