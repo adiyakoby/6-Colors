@@ -1,7 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "Colors.h"
-#include "Computer.h"
+#include "Enemy.h"
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;

@@ -4,7 +4,7 @@
 #include "Node.h" // has iostream, sfml graphic, memory, list
 #include <functional>
 #include <map>
-#include "Ememy.h"
+#include "EasyMode.h"
 
 template<class Shape>
 class Graph
@@ -32,7 +32,10 @@ public:
 
 
 	void attach_nodes(const sf::Color& color, const Owner &owner) {
-		m_player_start->find_nodes(color, owner);
+		if (owner == Player)
+			m_player_start->find_nodes(color, owner);
+		else
+			m_computer_start->find_nodes(color, owner);
 		std::ranges::for_each(m_board.begin(), m_board.end(), [&](const auto& ea) {ea->un_visit(); });
 	};
 
