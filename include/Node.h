@@ -27,7 +27,8 @@ public:
 	inline bool is_visited() const { return m_visited; };
 	inline Owner get_owner() const { return m_owner; };
 	bool find_Color(const sf::Color &color);
-	
+	sf::Color findColorHardMode();
+	void getHighest(const sf::Color& color, std::vector<int>& color_count,int i);
 	
 	// setters
 	void set_color(const sf::Color& color) { m_shape.setFillColor(color); };
@@ -162,21 +163,53 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 }
 
 
-//template<class Shape>
-//bool Node<Shape>::find_Color(const sf::Color& color) {
-//
-//	m_visited = true;
-//	bool retval{ false };
-//	int rand_neighb = rand() % m_neighbors.size();
-//	auto it = std::next(m_neighbors.begin(), rand_neighb);
-//	if (it->get()->get_owner() == Natural && it->get()->get_color() == color))
-//			return true;
-//
-//	//if (it->get()->get_owner() == Natural)
-//	//	return false;
-//
-//	if (!it->get()->is_visited() && it->get->get_owner() == Computer)
-//		retval = it->get()->find_Color(color);
-//
-//	
-//}
+
+template<class Shape>
+sf::Color Node<Shape>::findColorHardMode() {
+	std::cout << "hardest\n";
+	std::vector <int> color_count(m_neighbors.size(),0);
+
+	int i{};
+	bool found_color{ false };
+	for (auto& ea : m_neighbors) {
+
+		m_visited = true;
+		if (ea->get_owner() == Natural) {
+			color_count[i]++;
+			ea->getHighest(this->get_color(), color_count, i);;
+			found_color = true;
+		}
+		i++;
+	}
+
+	if (found_color) {
+		auto max = max_element(color_count.begin(), color_count.end());
+		auto it = m_neighbors.begin();
+		for (auto& ea : color_count) {
+			if (ea == *max)
+				return it->get()->get_color();
+			it++;
+		}
+
+	}
+
+
+	return findColorHardMode();
+
+	
+}
+
+template<class Shape>
+void  Node<Shape>::getHighest(const sf::Color &color, std::vector<int> &color_count,int fill) {
+
+	for (auto& ea : m_neighbors)
+	{
+		if (ea->get_owner() == Natural && (!ea->is_visited()) && ea->get_color() == color)
+		{
+			m_visited = true;
+			color_count[fill]++;
+			ea->getHighest(color, color_count, fill);
+		}
+		m_visited = false;
+	}
+}
