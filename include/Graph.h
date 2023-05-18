@@ -25,8 +25,7 @@ class Graph
 public:
 	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
 		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
-		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
-		m_player_start{ nullptr }, m_computer_start{ nullptr };
+		std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 
 	~Graph() = default;
 
@@ -62,6 +61,8 @@ template<class Shape>
 inline Graph<Shape>::Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle, 
 							std::function<std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func, 
 							std::function<sf::Vector2f(Shape, bool, bool)> dist_func)
+	:m_ref_window{ window },
+	m_player_start{ nullptr }, m_computer_start{ nullptr }
 {
 
 	std::srand(0);

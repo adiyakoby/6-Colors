@@ -3,6 +3,7 @@
 #include "Colors.h"
 #include "EasyMode.h"
 #include "HardMode.h"
+#include "MedMode.h"
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
@@ -59,7 +60,7 @@ public:
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
 	{
 		//m_enemy = std::make_unique<EasyMode<Shape>>(m_graph);
-		m_enemy = std::make_unique<HardMode<Shape>>(m_graph,m_graph->get_comp_node());
+		m_enemy = std::make_unique<MedMode<Shape>>(m_graph);
 	};
 	~Controller () = default;
 

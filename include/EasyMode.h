@@ -13,8 +13,6 @@ public:
 	virtual ~EasyMode() = default;
 
 	virtual sf::Color action() override {
-		std::cout << "action" << std::endl;
-
 
 		bool found{ false };
 		std::vector<sf::Color> avail_colors{ game_graph->get_avail_color() };

@@ -27,9 +27,8 @@ public:
 	inline bool is_visited() const { return m_visited; };
 	inline Owner get_owner() const { return m_owner; };
 	bool find_Color(const sf::Color &color);
-	sf::Color findColorHardMode();
 	void getHighest(const sf::Color& color, std::vector<int>& color_count,int i);
-	
+	int  getHighest(const sf::Color& color);
 	// setters
 	void set_color(const sf::Color& color) { m_shape.setFillColor(color); };
 	inline void set_position(const sf::Vector2f& pos) { m_shape.setPosition(pos); };
@@ -170,52 +169,6 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 
 
 template<class Shape>
-sf::Color Node<Shape>::findColorHardMode() {
-	std::cout << "hardest\n";
-	std::vector <int> color_count(m_neighbors.size(),0);
-	int i{};
-	bool found_color{ false };
-	
-	m_visited = true;
-	for (auto& ea : m_neighbors) {
-		if (ea->get_owner() == Natural && !ea->is_visited()) {
-			ea->m_visited = true;
-			color_count[i]++;
-			ea->getHighest(ea->get_color(), color_count, i);
-			found_color = true;
-		}
-		i++;
-	}
-
-	if (found_color) {
-		auto max = max_element(color_count.begin(), color_count.end());
-		auto it = m_neighbors.begin();
-		for (auto& ea : color_count) {
-			if (ea == *max)
-				return it->get()->get_color();
-			it++;
-		}
-
-	}
-	for (auto& ea : m_neighbors) {
-		ea->m_visited = true;
-		sf::Color color = ea->findColorHardMode();
-		if (color != sf::Color::Black) {
-			return color;
-		}
-	}
-	// No usable color found, return an appropriate default color
-	return sf::Color::Black; // or any other default color value
-
-}
-
-
-
-
-
-
-
-template<class Shape>
 void  Node<Shape>::getHighest (const sf::Color& color, std::vector<int>& color_count, int fill) {
 	
 	m_visited = true;
@@ -234,4 +187,27 @@ void  Node<Shape>::getHighest (const sf::Color& color, std::vector<int>& color_c
 	}
 	//m_visited = false;
 	//m_visited = false;
+}
+
+
+template<class Shape>
+int  Node<Shape>::getHighest(const sf::Color& color) {
+
+	m_visited = true;
+	int sum{};
+
+
+	if (m_owner == Player)
+		return 0;
+
+
+	for (auto& ea : m_neighbors) {
+		if (ea->get_owner() == Natural && (!ea->is_visited()) && ea->get_color() == color) {
+			sum++;
+			sum += ea->getHighest(color);
+		}
+	}
+
+
+	return sum;
 }
