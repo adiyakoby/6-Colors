@@ -1,9 +1,12 @@
 #pragma once
+
 #include "Graph.h"
 #include "Colors.h"
 #include "EasyMode.h"
 #include "HardMode.h"
 #include "MedMode.h"
+#include "Painter.h"
+
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
@@ -58,9 +61,13 @@ class Controller
 public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
-		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
+		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
+		m_enemy{ std::make_unique<HardMode<Shape>>(m_graph->computer_begin()) },
+		m_painter{m_window}
+		
 	{
-		m_enemy = std::make_unique<MedMode<Shape>>(m_graph->computer_begin());
+		m_painter.set_start_it(m_graph->begin());
+		m_painter.set_end_it(m_graph->end());
 	};
 	~Controller () = default;
 
@@ -77,6 +84,7 @@ public:
 	
 private:
 	sf::RenderWindow m_window;
+	Painter<Shape> m_painter;
 	sf::RectangleShape m_rect;
 	Colors m_color;
 
@@ -120,7 +128,8 @@ template<class Shape>
 		 m_window.clear();
 
 		 //drawing
-		 m_graph->draw();
+		 //m_graph->draw();
+		 m_painter.draw_graph();
 		 //m_window.draw(m_rect); // only for us
 		 m_color.drawMenu(m_window);
 		 m_window.display();

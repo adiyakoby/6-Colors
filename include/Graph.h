@@ -36,8 +36,6 @@ public:
 	void unvisit_nodes();
 	inline void draw() const;
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
-	
-
 	void attach_nodes(const sf::Color& color, const Owner& owner);
 
 
@@ -50,8 +48,15 @@ public:
 		using pointer = Node<Shape>*;  // or also value_type*
 		using reference = Node<Shape> &;  // or also value_type&
 
+		GraphIterator() : m_ptr() { ; };
 		GraphIterator(graph_ds::iterator ptr) : m_ptr(ptr) { ; };
-
+		GraphIterator(const GraphIterator& other) : m_ptr(other.m_ptr) { ; };
+		GraphIterator& operator=(const GraphIterator& other) {
+			if (this != &other) {
+				m_ptr = other.m_ptr;
+			}
+			return *this;
+		}
 		reference operator*() const { return *(m_ptr->second); }; // double derfrence for iterator and shared_ptr
 		pointer operator->() { return m_ptr->second.get(); }
 
@@ -61,8 +66,8 @@ public:
 		// Postfix increment
 		GraphIterator operator++(int) { GraphIterator tmp = *this; ++(*this); return tmp; };
 
-		bool operator== (const GraphIterator& rhs) { return this == rhs; };
-		bool operator!= (const GraphIterator& rhs) { return !(this == rhs); };
+		bool operator== (const GraphIterator& rhs) { return m_ptr == rhs.m_ptr; };
+		bool operator!= (const GraphIterator& rhs) { return !(m_ptr == rhs.m_ptr); };
 
 	private:
 		graph_ds::iterator m_ptr;
@@ -70,7 +75,6 @@ public:
 	/* End of custom iterator */
 
 	GraphIterator computer_begin() { return GraphIterator(m_map.find( {m_computer_start->getX(), m_computer_start->getY() })); };
-
 	GraphIterator begin() { return GraphIterator(m_map.begin()); };
 	GraphIterator end() { return GraphIterator(m_map.end()); };
 

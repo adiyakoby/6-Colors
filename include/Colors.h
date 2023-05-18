@@ -18,11 +18,6 @@ public:
 
 
 	void drawMenu(sf::RenderWindow& w);
-	void drawX() {
-		//sf::Lines line_a(100.f,100.f);
-		;
-
-	};
 
 	sf::Color check_for_color(const float& x, const float& y);
 
@@ -35,6 +30,7 @@ private:
 	unsigned int m_width;
 	unsigned int m_height;
 
+	//private funcs
 	void create_vec();
 	void setColors();
 	

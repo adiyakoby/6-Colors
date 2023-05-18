@@ -5,7 +5,7 @@
 #include <memory>
 #include <list>
 #include <algorithm>
-#include <stack>
+
 
 
 enum Owner { Natural, Computer, Player };
@@ -31,7 +31,7 @@ public:
 	bool find_Color(const sf::Color &color);
 	void get_neigh_colors(std::vector<sf::Color>& vec);
 	void count_neigh_colors(std::vector<int>& vec);
-
+	Shape& get_shape() { return m_shape; };
 
 
 	// setters
