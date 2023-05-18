@@ -21,13 +21,14 @@ std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float rad
 	all_neighbors.push_back(sf::Vector2f(pos.x - radius * (std::sqrt(3.f) / 2.f), pos.y - radius * 1.5f));
 
 	for (auto& ea : all_neighbors) {
-		ea.x = std::round(ea.x);
-		ea.y = std::round(ea.y);
+		ea.x = ea.x;
+		ea.y = ea.y;
 	}
 
 	return all_neighbors;
 
 };
+
 
 sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool& right, const bool& down) {
 
@@ -59,7 +60,7 @@ public:
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
 	{
 		//m_enemy = std::make_unique<EasyMode<Shape>>(m_graph);
-		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph,m_graph->get_comp_node());
+		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph->computer_begin());
 	};
 	~Controller () = default;
 
@@ -78,8 +79,8 @@ private:
 	sf::RenderWindow m_window;
 	sf::RectangleShape m_rect;
 	Colors m_color;
+
 	std::shared_ptr<Graph<Shape>> m_graph;
-	
 	std::unique_ptr<Enemy> m_enemy;
 
 	//private functions
