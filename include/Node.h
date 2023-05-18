@@ -128,26 +128,23 @@ sf::Color Node<Shape>::rand_color() const {
 template<class Shape>
 bool Node<Shape>::find_Color(const sf::Color& color) {
 	m_visited = true;
+
 	for (auto& ea : m_neighbors)
-	{
 		if (ea->get_owner() == Natural && ea->get_color() == color)
-		{
-			m_visited = false;
 			return true;
-		}
-	}
+		
+			
+	
+
 	for (auto& ea : m_neighbors)
-	{
 		if (ea->get_owner() == Computer && !ea->is_visited())
 			if (ea->find_Color(color))
-			{
-				m_visited = false;
 				return true;
-			}
-				
-	}
+			
+			
+	
 
-	m_visited = false;
+
 	return false;
 }
 

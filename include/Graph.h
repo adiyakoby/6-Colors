@@ -36,7 +36,7 @@ public:
 	void unvisit_nodes();
 	inline void draw() const;
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
-	std::vector<sf::Color> get_avail_color();
+	
 
 	void attach_nodes(const sf::Color& color, const Owner& owner);
 
@@ -69,6 +69,7 @@ public:
 	};
 	/* End of custom iterator */
 
+	GraphIterator computer_begin() { return GraphIterator(m_map.find( {m_computer_start->getX(), m_computer_start->getY() })); };
 
 	GraphIterator begin() { return GraphIterator(m_map.begin()); };
 	GraphIterator end() { return GraphIterator(m_map.end()); };
@@ -122,18 +123,6 @@ inline void Graph<Shape>::draw() const
 	std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); });
 };
 
-template<class Shape>
-inline std::vector<sf::Color> Graph<Shape>::get_avail_color()
-{
-	std::vector<sf::Color> ret_vec{};
-	for (auto& ea : m_map)
-		if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
-			if(std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
-				ret_vec.push_back(ea.second->get_color());
-
-		return ret_vec;
-};
-
 
 template<class Shape>
 inline void Graph<Shape>::attach_nodes(const sf::Color& color, const Owner& owner)
@@ -177,11 +166,11 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		if (validation(temp, rectangle))
 		{
 			ptr = std::make_shared<Node<Shape>>(temp);
-			m_map.emplace(std::make_pair(std::round(ptr->getX()), std::round(ptr->getY())), ptr);
+			m_map.emplace(std::make_pair(ptr->getX(), ptr->getY()), ptr);
 			if (m_map.size() > 0 && (m_computer_start.get() == nullptr || ptr->getY() > m_player_start->getY()))
-				m_player_start = ptr;		
+				m_player_start = ptr;	
 		}
-
+		
 		board_width -= temp.getGlobalBounds().width;
 		//if(m_map.size() > 0 && m_computer_start.get() == nullptr)
 			//m_player_start = ptr;
@@ -220,10 +209,9 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 {
 	std::list<std::shared_ptr<Node<Shape>>> lst;
 	for (const auto& ea : loc) {
-		auto it = m_map.find(std::make_pair(std::round(ea.x), std::round(ea.y)));
+		auto it = m_map.find(std::make_pair(ea.x, ea.y));
 		if (it != m_map.end())
 			lst.push_back(it->second);
-
 	}
 
 	return lst;
