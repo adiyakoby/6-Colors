@@ -3,6 +3,7 @@
 #include "Colors.h"
 #include "EasyMode.h"
 #include "HardMode.h"
+#include "MedMode.h"
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
