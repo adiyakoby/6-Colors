@@ -5,7 +5,7 @@
 #include <memory>
 #include <list>
 #include <algorithm>
-
+#include <stack>
 enum Owner { Natural, Computer, Player };
 
 template<class Shape>
@@ -48,6 +48,7 @@ public:
 			if (ea->get_owner() == Computer)
 				return true;
 		}
+		return false;
 	}
 
 
@@ -92,7 +93,7 @@ inline bool Node<Shape>::set_owner(const Owner& type)
 template<class Shape>
 inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
 {
-	std::cout << "find_nodes" << std::endl;
+	//std::cout << "find_nodes" << std::endl;
 	m_visited = true;
 	if (m_owner == owner_type)
 	{
@@ -121,7 +122,7 @@ sf::Color Node<Shape>::rand_color() const {
 
 template<class Shape>
 bool Node<Shape>::find_Color(const sf::Color& color) {
-	std::cout << "find_Color" << std::endl;
+	//std::cout << "find_Color" << std::endl;
 
 	m_visited = true;
 	//bool ret_val{ false };
@@ -168,15 +169,15 @@ template<class Shape>
 sf::Color Node<Shape>::findColorHardMode() {
 	std::cout << "hardest\n";
 	std::vector <int> color_count(m_neighbors.size(),0);
-
 	int i{};
 	bool found_color{ false };
+	
+	m_visited = true;
 	for (auto& ea : m_neighbors) {
-
-		m_visited = true;
-		if (ea->get_owner() == Natural) {
+		if (ea->get_owner() == Natural && !ea->is_visited()) {
+			ea->m_visited = true;
 			color_count[i]++;
-			ea->getHighest(this->get_color(), color_count, i);;
+			ea->getHighest(ea->get_color(), color_count, i);
 			found_color = true;
 		}
 		i++;
@@ -192,24 +193,41 @@ sf::Color Node<Shape>::findColorHardMode() {
 		}
 
 	}
+	for (auto& ea : m_neighbors) {
+		ea->m_visited = true;
+		sf::Color color = ea->findColorHardMode();
+		if (color != sf::Color::Black) {
+			return color;
+		}
+	}
+	// No usable color found, return an appropriate default color
+	return sf::Color::Black; // or any other default color value
 
-
-	return findColorHardMode();
-
-	
 }
 
-template<class Shape>
-void  Node<Shape>::getHighest(const sf::Color &color, std::vector<int> &color_count,int fill) {
 
-	for (auto& ea : m_neighbors)
-	{
-		if (ea->get_owner() == Natural && (!ea->is_visited()) && ea->get_color() == color)
-		{
-			m_visited = true;
+
+
+
+
+
+template<class Shape>
+void  Node<Shape>::getHighest (const sf::Color& color, std::vector<int>& color_count, int fill) {
+	
+	m_visited = true;
+
+	if (m_owner == Player)
+		return;
+
+	
+	for (auto& ea : m_neighbors){
+		if (ea->get_owner() == Natural && (!ea->is_visited()) && ea->get_color() == color){
+			//ea->m_visited = true;
 			color_count[fill]++;
-			ea->getHighest(color, color_count, fill);
+			ea->getHighest(color, color_count, fill);	
 		}
-		m_visited = false;
+		//ea -> m_visited = false;
 	}
+	//m_visited = false;
+	//m_visited = false;
 }

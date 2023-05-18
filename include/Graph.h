@@ -5,6 +5,7 @@
 #include <functional>
 #include <unordered_map>
 #include <set>
+#include <iterator>
 
 
 // using std::hash in order to hash the std::pair for key in un_map
@@ -27,7 +28,7 @@ public:
 		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
 		m_player_start{nullptr}, m_computer_start{nullptr}
 	{
-		std::srand(time(NULL));
+		std::srand(0);
 
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
@@ -47,10 +48,26 @@ public:
 	constexpr inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 
 
-	std::vector<sf::Color> get_avail_color();
+	std::vector<sf::Color> get_avail_color() 
+	{
+		std::vector<sf::Color> ret_vec{};
+		for (auto& ea : m_map)
+		{
+			if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
+			{
+				if(std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
+					ret_vec.push_back(ea.second->get_color());
+			}
+		}
+		std::cout << ret_vec.size() << "re vec<<<<<<<\n";
+		return ret_vec;
+	};
+
+
 
 
 	void attach_nodes(const sf::Color& color, const Owner& owner);
+
 
 private:
 

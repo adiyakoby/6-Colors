@@ -59,7 +59,7 @@ public:
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
 	{
 		//m_enemy = std::make_unique<EasyMode<Shape>>(m_graph);
-		m_enemy = std::make_unique<HardMode<Shape>>(m_graph->get_comp_node());
+		m_enemy = std::make_unique<HardMode<Shape>>(m_graph,m_graph->get_comp_node());
 	};
 	~Controller () = default;
 
@@ -69,7 +69,6 @@ public:
 private:
 	sf::RenderWindow m_window;
 	sf::RectangleShape m_rect;
-
 	Colors m_color;
 	std::shared_ptr<Graph<Shape>> m_graph;
 	
