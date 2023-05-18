@@ -42,14 +42,7 @@ public:
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
 
 	
-	inline bool is_comp_attached() {
-		for (auto& ea : m_neighbors)
-		{
-			if (ea->get_owner() == Computer)
-				return true;
-		}
-		return false;
-	}
+	inline bool is_comp_attached() const;
 
 
 	//operator overloading
@@ -104,6 +97,17 @@ inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_t
 		this->set_color(color);
 	}
 }
+
+template<class Shape>
+inline bool Node<Shape>::is_comp_attached() const
+{
+	for (const auto& ea : m_neighbors)
+	{
+		if (ea->get_owner() == Computer)
+			return true;
+	}
+	return false;
+};
 
 
 

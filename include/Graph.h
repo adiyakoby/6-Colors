@@ -26,47 +26,17 @@ public:
 	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
 		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
 		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
-		m_player_start{nullptr}, m_computer_start{nullptr}
-	{
-		std::srand(0);
+		m_player_start{ nullptr }, m_computer_start{ nullptr };
 
-		this->make_Graph(shape, rectangle, dist_func);
-		this->connect_nodes(neighbors_func);
-
-		m_player_start->set_owner(Player);
-		m_computer_start->set_owner(Computer);
-		
-
-
-	};
 	~Graph() = default;
 
-	void unvisit_nodes() { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); }); };
-
-	inline void draw() const { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); }); };
-
-	constexpr inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
-
-
-	std::vector<sf::Color> get_avail_color() 
-	{
-		std::vector<sf::Color> ret_vec{};
-		for (auto& ea : m_map)
-		{
-			if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
-			{
-				if(std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
-					ret_vec.push_back(ea.second->get_color());
-			}
-		}
-		std::cout << ret_vec.size() << "re vec<<<<<<<\n";
-		return ret_vec;
-	};
-
-
-
+	void unvisit_nodes();
+	inline void draw() const;
+	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
+	std::vector<sf::Color> get_avail_color();
 
 	void attach_nodes(const sf::Color& color, const Owner& owner);
+
 
 
 private:
@@ -89,16 +59,46 @@ private:
 
 
 template<class Shape>
+inline Graph<Shape>::Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle, 
+							std::function<std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func, 
+							std::function<sf::Vector2f(Shape, bool, bool)> dist_func)
+{
+
+	std::srand(0);
+
+	this->make_Graph(shape, rectangle, dist_func);
+	this->connect_nodes(neighbors_func);
+
+	m_player_start->set_owner(Player);
+	m_computer_start->set_owner(Computer);
+
+};
+
+template<class Shape>
+inline void Graph<Shape>::unvisit_nodes()
+{
+	std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
+};
+
+template<class Shape>
+inline void Graph<Shape>::draw() const
+{
+	std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); });
+};
+
+template<class Shape>
 inline std::vector<sf::Color> Graph<Shape>::get_avail_color()
 {
-	std::vector<sf::Color> ret_set{};
+	std::vector<sf::Color> ret_vec{};
 	for (auto& ea : m_map)
 		if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
-			ret_set.push_back(ea.second->get_color());
-	
-	return ret_set;
+			if(std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
+				ret_vec.push_back(ea.second->get_color());
 
-}
+		return ret_vec;
+};
+
+
 template<class Shape>
 inline void Graph<Shape>::attach_nodes(const sf::Color& color, const Owner& owner)
 {
