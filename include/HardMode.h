@@ -18,13 +18,18 @@ public:
 	virtual sf::Color action() override {
 		std::vector<sf::Color> avail_colors{ game_graph->get_avail_color() };
 		std::vector <int> color_count(avail_colors.size(), 0);
+		std::cout << avail_colors.size() << std::endl;
 		sf::Color color;
 		int i{}, max{};
 		for (const auto& ea : avail_colors)
 		{
 			m_comp->getHighest(ea, color_count, i);
-			if (color_count.at(i) >= max)
+			if (color_count.at(i) > max && avail_colors[i] != m_comp->get_color())
+			{ 
 				max = color_count.at(i);
+				std::cout << "max:" << max << std::endl;
+			}
+			game_graph->unvisit_nodes();
 			i++;
 		}
 	

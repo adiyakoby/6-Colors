@@ -59,13 +59,17 @@ public:
 
 	std::vector<sf::Color> get_avail_color() 
 	{
-		std::vector<sf::Color> ret_set{};
+		std::vector<sf::Color> ret_vec{};
 		for (auto& ea : m_map)
 		{
 			if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
-				ret_set.push_back(ea.second->get_color());
+			{
+				if(std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
+					ret_vec.push_back(ea.second->get_color());
+			}
 		}
-		return ret_set;
+		std::cout << ret_vec.size() << "re vec<<<<<<<\n";
+		return ret_vec;
 	};
 
 
@@ -79,6 +83,9 @@ public:
 
 		std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
 	};
+
+
+
 
 
 private:
