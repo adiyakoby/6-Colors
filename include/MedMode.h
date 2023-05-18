@@ -5,15 +5,12 @@ template<class Shape>
 class MedMode : public Enemy {
 
 public:
-
 	MedMode(std::shared_ptr<Graph<Shape>>& graph) :
 		game_graph{ graph } {
 		;
 	}
 	virtual ~MedMode() = default;
-
 	virtual sf::Color action() override;
-
 
 private:
 	std::shared_ptr<Graph<Shape>>& game_graph;
@@ -30,3 +27,4 @@ inline sf::Color MedMode<Shape>::action()
 	return sf::Color::Black;
 
 }
+

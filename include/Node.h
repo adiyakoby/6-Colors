@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <stack>
 
+
 enum Owner { Natural, Computer, Player };
 
 template<class Shape>
@@ -126,11 +127,7 @@ sf::Color Node<Shape>::rand_color() const {
 
 template<class Shape>
 bool Node<Shape>::find_Color(const sf::Color& color) {
-	//std::cout << "find_Color" << std::endl;
-
 	m_visited = true;
-	//bool ret_val{ false };
-	
 	for (auto& ea : m_neighbors)
 	{
 		if (ea->get_owner() == Natural && ea->get_color() == color)
@@ -138,15 +135,7 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 			m_visited = false;
 			return true;
 		}
-			
 	}
-	//auto it = std::next(m_neighbors.begin(), rand() % m_neighbors.size());
-	//if (it->get()->get_owner() == Natural && it->get()->get_color() == color)
-		//return true;
-
-	//if (it->get()->get_owner() == Natural)
-	//	return false;
-
 	for (auto& ea : m_neighbors)
 	{
 		if (ea->get_owner() == Computer && !ea->is_visited())
@@ -158,11 +147,6 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 				
 	}
 
-	//if (ret_val) return true;
-	//else {
-	//	it = std::next(m_neighbors.begin(), rand() % m_neighbors.size());
-	//	ret_val = it->get()->find_Color(color);
-	//}
 	m_visited = false;
 	return false;
 }
