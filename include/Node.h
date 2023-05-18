@@ -31,8 +31,7 @@ public:
 	bool find_Color(const sf::Color &color);
 	void get_neigh_colors(std::vector<sf::Color>& vec);
 	void count_neigh_colors(std::vector<int>& vec);
-	void getHighest(const sf::Color& color, std::vector<int>& color_count,int i);
-	int  getHighest(const sf::Color& color);
+
 
 
 	// setters
@@ -45,7 +44,6 @@ public:
 
 	//players func
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
-	inline bool is_comp_attached() const;
 
 
 	//operator overloading
@@ -71,7 +69,6 @@ inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Natural),
 {
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
-	
 }
 
 
@@ -99,16 +96,6 @@ inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_t
 		this->set_color(color);
 	}
 }
-
-template<class Shape>
-inline bool Node<Shape>::is_comp_attached() const
-{
-	for (const auto& ea : m_neighbors)
-		if (ea->get_owner() == Computer)
-			return true;
-	
-	return false;
-};
 
 
 
@@ -191,50 +178,3 @@ void Node<Shape>::count_neigh_colors(std::vector<int>& vec) {
 	}
 }
 
-
-
-
-
-template<class Shape>
-void  Node<Shape>::getHighest (const sf::Color& color, std::vector<int>& color_count, int fill) {
-	
-	m_visited = true;
-
-	if (m_owner == Player)
-		return;
-
-	
-	for (auto& ea : m_neighbors){
-		if (ea->get_owner() == Natural && (!ea->is_visited()) && ea->get_color() == color){
-			//ea->m_visited = true;
-			color_count[fill]++;
-			ea->getHighest(color, color_count, fill);	
-		}
-		//ea -> m_visited = false;
-	}
-	//m_visited = false;
-	//m_visited = false;
-}
-
-
-template<class Shape>
-int  Node<Shape>::getHighest(const sf::Color& color) {
-
-	m_visited = true;
-	int sum{};
-
-
-	if (m_owner == Player)
-		return 0;
-
-
-	for (auto& ea : m_neighbors) {
-		if (ea->get_owner() == Natural && (!ea->is_visited()) && ea->get_color() == color) {
-			sum++;
-			sum += ea->getHighest(color);
-		}
-	}
-
-
-	return sum;
-}
