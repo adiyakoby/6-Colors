@@ -35,9 +35,7 @@ public:
 		m_player_start->set_owner(Player);
 		m_computer_start->set_owner(Computer);
 		
-		
-		//m_player_start->set_color(sf::Color::White);
-		//m_computer_start->set_color(sf::Color::White);
+
 
 	};
 	~Graph() = default;
@@ -49,29 +47,10 @@ public:
 	constexpr inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 
 
-	std::vector<sf::Color> get_avail_color() 
-	{
-		std::vector<sf::Color> ret_set{};
-		for (auto& ea : m_map)
-		{
-			if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
-				ret_set.push_back(ea.second->get_color());
-		}
-		return ret_set;
-	};
+	std::vector<sf::Color> get_avail_color();
 
 
-
-	void attach_nodes(const sf::Color& color, const Owner &owner) {
-		std::cout << "attach_nodes" << std::endl;
-		if(owner == Player)
-			m_player_start->find_nodes(color, owner);
-		else if(owner == Computer)
-			m_computer_start->find_nodes(color, owner);
-
-		std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
-	};
-
+	void attach_nodes(const sf::Color& color, const Owner& owner);
 
 private:
 
@@ -91,6 +70,29 @@ private:
 
 };
 
+
+template<class Shape>
+inline std::vector<sf::Color> Graph<Shape>::get_avail_color()
+{
+	std::vector<sf::Color> ret_set{};
+	for (auto& ea : m_map)
+		if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
+			ret_set.push_back(ea.second->get_color());
+	
+	return ret_set;
+
+}
+template<class Shape>
+inline void Graph<Shape>::attach_nodes(const sf::Color& color, const Owner& owner)
+{
+	std::cout << "attach_nodes" << std::endl;
+	if (owner == Player)
+		m_player_start->find_nodes(color, owner);
+	else if (owner == Computer)
+		m_computer_start->find_nodes(color, owner);
+
+	std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
+};
 
 template<class Shape>
 inline bool Graph<Shape>::validation(const Shape& shape, const sf::RectangleShape& rectangle)
