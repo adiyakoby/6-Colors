@@ -30,6 +30,7 @@ public:
 	inline Owner get_owner() const { return m_owner; };
 	bool find_Color(const sf::Color &color);
 	void get_neigh_colors(std::vector<sf::Color>& vec);
+	void count_neigh_colors(std::vector<int>& vec);
 	void getHighest(const sf::Color& color, std::vector<int>& color_count,int i);
 	int  getHighest(const sf::Color& color);
 
@@ -143,19 +144,53 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 
 template<class Shape>
 void Node<Shape>::get_neigh_colors(std::vector<sf::Color>& vec) {
+
 	m_visited = true;
-	std::cout << "get_neigh_colors  \n";
 
 	for (auto& ea : m_neighbors) 
-	{
-		if (ea->get_owner() == Natural)
-			if ( std::find(vec.begin(), vec.end(), ea->get_color()) == vec.end() )
+		if (ea->get_owner() == Natural) 
+			if (std::find(vec.begin(), vec.end(), ea->get_color()) == vec.end())
 				vec.push_back(ea->get_color());
+			
+	if (vec.size() > 0) return;
 
-		else if(ea->get_owner() == Computer && !ea->is_visited())
-				ea->get_neigh_colors(vec);	
+	for (auto& ea : m_neighbors)
+		if (vec.size() == 0 && ea->get_owner() == Computer && !ea->is_visited())
+			ea->get_neigh_colors(vec);
+	
+}
+
+template<class Shape>
+void Node<Shape>::count_neigh_colors(std::vector<int>& vec) {
+
+	m_visited = true;
+
+	//sf::Color::Red, sf::Color::Magenta, sf::Color::Green,
+	//sf::Color::Blue, sf::Color::Yellow, sf::Color::Cyan
+
+	for (auto& ea : m_neighbors)
+	{
+		if (ea->get_owner() == Natural) {
+			sf::Color color= ea->get_color();
+
+			if (color == sf::Color::Red)
+				vec.at(0) += 1;
+			else if (color == sf::Color::Magenta)
+				vec.at(1) += 1;
+			else if (color == sf::Color::Green)
+				vec.at(2) += 1;
+			else if (color == sf::Color::Blue)
+				vec.at(3) += 1;
+			else if (color == sf::Color::Yellow)
+				vec.at(4) += 1;
+			else if (color == sf::Color::Cyan)
+				vec.at(5) += 1;
+		}
+		else if (ea->get_owner() == Computer && !ea->is_visited())
+			ea->count_neigh_colors(vec);
 	}
 }
+
 
 
 

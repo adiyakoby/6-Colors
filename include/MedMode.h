@@ -5,26 +5,23 @@ template<class Shape>
 class MedMode : public Enemy {
 
 public:
-	MedMode(std::shared_ptr<Graph<Shape>>& graph) :
-		game_graph{ graph } {
-		;
-	}
+	MedMode(Graph<Shape>::GraphIterator it_start) : m_comp_node{ it_start } { ; };
 	virtual ~MedMode() = default;
+
 	virtual sf::Color action() override;
 
 private:
-	std::shared_ptr<Graph<Shape>>& game_graph;
+	Graph<Shape>::GraphIterator m_comp_node;
 };
 
 
+
+
 template<class Shape>
-inline sf::Color MedMode<Shape>::action()
+ sf::Color MedMode<Shape>::action()
 {
-	std::vector<sf::Color> avail_colors{ game_graph->get_avail_color() };
-	if (!avail_colors.empty())
-		return avail_colors.at(0);
+	std::vector<sf::Color> avail_colors{};
+	m_comp_node->get_neigh_colors(avail_colors);
 
-	return sf::Color::Black;
-
+	return ( !avail_colors.empty() ? avail_colors.at(0) : sf::Color::Black);
 }
-

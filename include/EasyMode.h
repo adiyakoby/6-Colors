@@ -13,25 +13,19 @@ public:
 	
 private:
 	Graph<Shape>::GraphIterator m_comp_node;
+
 	sf::Color rand_color() const;
 
 };
 
 template<class Shape>
-inline sf::Color EasyMode<Shape>::action()
+sf::Color EasyMode<Shape>::action()
 {
 	std::vector<sf::Color> avail_colors{};
-	
 	m_comp_node->get_neigh_colors(avail_colors);
-	std::cout << avail_colors.size() << std::endl;
 
 	return (avail_colors.size() > 0 ? avail_colors[rand() % avail_colors.size()] : sf::Color::Black);
 }
-
-
-
-
-
 
 
 template<class Shape>

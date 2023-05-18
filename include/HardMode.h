@@ -1,43 +1,31 @@
 #pragma once
 #include "Enemy.h"
+#include <array>
 
 template<class Shape>
 class HardMode : public Enemy {
 
 public:
 
-	HardMode(std::shared_ptr<Graph<Shape>>& graph, std::shared_ptr<Node<Shape>> comp) : m_comp{ comp }, game_graph{ graph } { ; };
-
+	HardMode(Graph<Shape>::GraphIterator it_start) : m_comp_node{ it_start } { ; };
 	virtual ~HardMode() = default;
 
 	virtual sf::Color action() override ;
 	
 private:
-	std::shared_ptr<Node<Shape>> m_comp;
-	std::shared_ptr<Graph<Shape>>& game_graph;
+	Graph<Shape>::GraphIterator m_comp_node;
 };
-
-
 
 
 template<class Shape>
-inline sf::Color HardMode<Shape>::action()
+ sf::Color HardMode<Shape>::action()
 {
-	std::vector<sf::Color> avail_colors{ game_graph->get_avail_color() };
-	std::vector <int> color_count(avail_colors.size(), 0);
-	sf::Color color;
-	int i{}, max{};
+	std::vector<sf::Color> colors{ sf::Color::Red, sf::Color::Magenta, sf::Color::Green,
+									 sf::Color::Blue, sf::Color::Yellow, sf::Color::Cyan };
+	std::vector<int> colors_count{0,0,0,0,0,0};
+
+	m_comp_node->count_neigh_colors(colors_count);
+	return colors.at(std::distance(colors_count.begin(), std::max_element(colors_count.begin(), colors_count.end())));
+}
 
 
-	for (int i = 0; i < avail_colors.size(); ++i) {
-		color_count[i] = m_comp->getHighest(avail_colors.at(i));
-		if (color_count.at(i) > max && avail_colors[i] != m_comp->get_color())
-			max = color_count.at(i);
-		game_graph->unvisit_nodes();
-	}
-	
-	for (int j = 0; j < color_count.size(); j++)
-		if (max == color_count[j])
-			return avail_colors[j];
-	return sf::Color::Black;
-};

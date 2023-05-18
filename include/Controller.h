@@ -60,8 +60,7 @@ public:
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
 	{
-		//m_enemy = std::make_unique<EasyMode<Shape>>(m_graph);
-		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph->computer_begin());
+		m_enemy = std::make_unique<MedMode<Shape>>(m_graph->computer_begin());
 	};
 	~Controller () = default;
 
