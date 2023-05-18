@@ -60,12 +60,20 @@ public:
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc))
 	{
 		//m_enemy = std::make_unique<EasyMode<Shape>>(m_graph);
-		m_enemy = std::make_unique<MedMode<Shape>>(m_graph);
+		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph,m_graph->get_comp_node());
 	};
 	~Controller () = default;
 
 	
 	void run_game();
+
+	void Test() {
+		auto it = m_graph->begin();
+		std::cout << (*it).getX() << std::endl;
+		++it;
+		std::cout << it->getX() << std::endl;
+
+	};
 	
 private:
 	sf::RenderWindow m_window;
