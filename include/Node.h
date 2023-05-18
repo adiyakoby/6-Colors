@@ -29,8 +29,11 @@ public:
 	inline bool is_visited() const { return m_visited; };
 	inline Owner get_owner() const { return m_owner; };
 	bool find_Color(const sf::Color &color);
+	void get_neigh_colors(std::vector<sf::Color>& vec);
 	void getHighest(const sf::Color& color, std::vector<int>& color_count,int i);
 	int  getHighest(const sf::Color& color);
+
+
 	// setters
 	void set_color(const sf::Color& color) { m_shape.setFillColor(color); };
 	inline void set_position(const sf::Vector2f& pos) { m_shape.setPosition(pos); };
@@ -41,8 +44,6 @@ public:
 
 	//players func
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
-
-	
 	inline bool is_comp_attached() const;
 
 
@@ -87,7 +88,6 @@ inline bool Node<Shape>::set_owner(const Owner& type)
 template<class Shape>
 inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
 {
-	//std::cout << "find_nodes" << std::endl;
 	m_visited = true;
 	if (m_owner == owner_type)
 	{
@@ -103,10 +103,9 @@ template<class Shape>
 inline bool Node<Shape>::is_comp_attached() const
 {
 	for (const auto& ea : m_neighbors)
-	{
 		if (ea->get_owner() == Computer)
 			return true;
-	}
+	
 	return false;
 };
 
@@ -132,21 +131,32 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 	for (auto& ea : m_neighbors)
 		if (ea->get_owner() == Natural && ea->get_color() == color)
 			return true;
-		
-			
 	
-
 	for (auto& ea : m_neighbors)
 		if (ea->get_owner() == Computer && !ea->is_visited())
 			if (ea->find_Color(color))
 				return true;
-			
-			
-	
-
 
 	return false;
 }
+
+
+template<class Shape>
+void Node<Shape>::get_neigh_colors(std::vector<sf::Color>& vec) {
+	m_visited = true;
+	std::cout << "get_neigh_colors  \n";
+
+	for (auto& ea : m_neighbors) 
+	{
+		if (ea->get_owner() == Natural)
+			if ( std::find(vec.begin(), vec.end(), ea->get_color()) == vec.end() )
+				vec.push_back(ea->get_color());
+
+		else if(ea->get_owner() == Computer && !ea->is_visited())
+				ea->get_neigh_colors(vec);	
+	}
+}
+
 
 
 

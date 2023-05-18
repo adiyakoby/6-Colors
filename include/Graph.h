@@ -127,7 +127,6 @@ inline void Graph<Shape>::draw() const
 template<class Shape>
 inline void Graph<Shape>::attach_nodes(const sf::Color& color, const Owner& owner)
 {
-	std::cout << "attach_nodes" << std::endl;
 	if (owner == Player)
 		m_player_start->find_nodes(color, owner);
 	else if (owner == Computer)

@@ -10,44 +10,24 @@ public:
 	virtual ~EasyMode() = default;
 
 	virtual sf::Color action() override;
-
-	std::vector<sf::Color> get_avail_color();
-
-	sf::Color rand_color() const;
-
+	
 private:
-	Graph<Shape>::GraphIterator const m_comp_node;
+	Graph<Shape>::GraphIterator m_comp_node;
+	sf::Color rand_color() const;
 
 };
 
 template<class Shape>
 inline sf::Color EasyMode<Shape>::action()
 {
-	bool found{ false };
-	std::vector<sf::Color> avail_colors{ get_avail_color() };
-
-	sf::Color color = rand_color();
-	for (auto& c : avail_colors)
-		if (c == color)
-			return color;
-
-	return (avail_colors.size() > 0 ? avail_colors[0] : color);
+	std::vector<sf::Color> avail_colors{};
 	
+	m_comp_node->get_neigh_colors(avail_colors);
+	std::cout << avail_colors.size() << std::endl;
+
+	return (avail_colors.size() > 0 ? avail_colors[rand() % avail_colors.size()] : sf::Color::Black);
 }
 
-template<class Shape>
-inline std::vector<sf::Color> EasyMode<Shape>::get_avail_color()
-{
-	std::vector<sf::Color> ret_vec{};
-	//DO BFS
-
-	for (auto& ea : m_map)
-		if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
-			if (std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
-				ret_vec.push_back(ea.second->get_color());
-
-	return ret_vec;
-}
 
 
 
