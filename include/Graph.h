@@ -19,16 +19,19 @@ public:
 };
 
 
+
 template<class Shape>
 class Graph
 {
 public:
 	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
 		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
-		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
-		m_player_start{ nullptr }, m_computer_start{ nullptr };
+		std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 
 	~Graph() = default;
+
+	//using
+	using graph_ds = std::unordered_map <std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash>;
 
 	void unvisit_nodes();
 	inline void draw() const;
@@ -39,10 +42,41 @@ public:
 
 
 
+	/* Custom iterator for the graph. */
+	class GraphIterator {
+	public:
+		using iterator_category = std::random_access_iterator_tag;
+		using value_type = Node<Shape>;
+		using pointer = Node<Shape>*;  // or also value_type*
+		using reference = Node<Shape> &;  // or also value_type&
+
+		GraphIterator(graph_ds::iterator ptr) : m_ptr(ptr) { ; };
+
+		reference operator*() const { return *(m_ptr->second); }; // double derfrence for iterator and shared_ptr
+		pointer operator->() { return m_ptr->second.get(); }
+
+		// Prefix increment
+		GraphIterator& operator++() { m_ptr++; return *this; };
+
+		// Postfix increment
+		GraphIterator operator++(int) { GraphIterator tmp = *this; ++(*this); return tmp; };
+
+		bool operator== (const GraphIterator& rhs) { return this == rhs; };
+		bool operator!= (const GraphIterator& rhs) { return !(this == rhs); };
+
+	private:
+		graph_ds::iterator m_ptr;
+	};
+	/* End of custom iterator */
+
+
+	GraphIterator begin() { return GraphIterator(m_map.begin()); };
+	GraphIterator end() { return GraphIterator(m_map.end()); };
+
 private:
 
 	sf::RenderWindow& m_ref_window;
-	std::unordered_map <std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash> m_map; // our graph of nodes
+	graph_ds m_map; // our graph of nodes
 
 	//players start nodes.
 	std::shared_ptr<Node<Shape>> m_player_start;
@@ -61,7 +95,9 @@ private:
 template<class Shape>
 inline Graph<Shape>::Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle, 
 							std::function<std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func, 
-							std::function<sf::Vector2f(Shape, bool, bool)> dist_func)
+							std::function<sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
+																						m_player_start{ nullptr }, 
+																						m_computer_start{ nullptr }
 {
 
 	std::srand(0);

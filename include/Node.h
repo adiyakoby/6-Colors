@@ -6,6 +6,7 @@
 #include <list>
 #include <algorithm>
 #include <stack>
+
 enum Owner { Natural, Computer, Player };
 
 template<class Shape>
