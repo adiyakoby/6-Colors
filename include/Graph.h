@@ -5,6 +5,7 @@
 #include <functional>
 #include <unordered_map>
 #include <set>
+#include <iterator>
 
 
 // using std::hash in order to hash the std::pair for key in un_map
@@ -27,7 +28,7 @@ public:
 		std::function <sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
 		m_player_start{nullptr}, m_computer_start{nullptr}
 	{
-		std::srand(time(NULL));
+		std::srand(0);
 
 		this->make_Graph(shape, rectangle, dist_func);
 		this->connect_nodes(neighbors_func);
@@ -46,8 +47,15 @@ public:
 
 	inline void draw() const { std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); }); };
 
+	//map iterators
 	constexpr inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
+	std::unordered_map<std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash>::iterator beginNode() {
+		return m_map.begin();
+	}
 
+	std::unordered_map<std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash>::iterator endNode() {
+		return m_map.end();
+	}
 
 	std::vector<sf::Color> get_avail_color() 
 	{
