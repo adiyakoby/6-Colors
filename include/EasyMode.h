@@ -39,6 +39,8 @@ template<class Shape>
 inline std::vector<sf::Color> EasyMode<Shape>::get_avail_color()
 {
 	std::vector<sf::Color> ret_vec{};
+	//DO BFS
+
 	for (auto& ea : m_map)
 		if (ea.second->get_owner() == Natural && ea.second->is_comp_attached())
 			if (std::find(ret_vec.begin(), ret_vec.end(), ea.second->get_color()) == ret_vec.end())
