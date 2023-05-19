@@ -19,7 +19,7 @@ public:
 	~Colors() = default;
 
 	void setColors();
-	void drawMenu(sf::RenderWindow& w);
+	void draw_colors(sf::RenderWindow& w);
 	void draw_x(const sf::Color& color, const ttpe& type);
 	sf::Color check_for_color(const float& x, const float& y);
 

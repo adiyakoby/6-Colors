@@ -10,7 +10,9 @@ template<class Shape>
 class Painter
 {
 public:
-	Painter(sf::RenderWindow& window) : m_window{ window }, m_menu(WINDOW_HEIGHT, WINDOW_WIDTH){
+	Painter(sf::RenderWindow& window) : m_window{ window }, m_menu(WINDOW_WIDTH, WINDOW_HEIGHT)
+										, m_colors(WINDOW_WIDTH, WINDOW_HEIGHT)
+	{
 			
 		set_exit(); 
 	};
@@ -20,34 +22,39 @@ public:
 	void set_end_it(Graph<Shape>::GraphIterator it_end) { m_graph_end = it_end; };
 	void draw_graph();
 	void draw_menu() { m_menu.draw(m_window); }
+
 	menu_state get_mode(const unsigned int &x, const unsigned int& y) { return m_menu.get_choice(x, y); };
+
 	sf::RectangleShape getscreen() { return m_menu.getscreen(); };
 	sf::RectangleShape get_exit() { return m_exit; };
-	//sf::Color check_for_color(const float& x, const float& y);
 
+	sf::Color check_for_color(const float& x, const float& y) { return m_colors.check_for_color(x, y); };
+	void draw_x(const sf::Color& color, const ttpe& type) { m_colors.draw_x(color, type); };
 	void set_exit();
 
 private:
 	Graph<Shape>::GraphIterator m_graph_start;
 	Graph<Shape>::GraphIterator m_graph_end;
+
 	sf::RenderWindow& m_window;
+
 	Menu m_menu;
+	Colors m_colors;
 
 	sf::RectangleShape m_exit;
-	
 	sf::Texture m_exitpng;
-	//sf::RectangleShape m_rectangle;
-	//Colors m_color;
+
+
 };
 
 template<class Shape>
 inline void Painter<Shape>::draw_graph()
 {
-	//m_color.drawMenu(m_window);
 	for (auto it = m_graph_start; it != m_graph_end; it++)
 		m_window.draw(it->get_shape());
+	m_colors.draw_colors(m_window);
 
-	m_window.draw(m_exit);
+	//m_window.draw(m_exit);
 }
 
 template<class Shape>

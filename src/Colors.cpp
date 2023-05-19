@@ -32,7 +32,7 @@ void Colors::draw_x(const sf::Color& color, const ttpe &type)
 	}
 }
 
-void Colors::drawMenu( sf::RenderWindow& window) {
+void Colors::draw_colors( sf::RenderWindow& window) {
 	for (auto& ea : m_buttons)
 		window.draw(ea);
 	window.draw(m_lines);

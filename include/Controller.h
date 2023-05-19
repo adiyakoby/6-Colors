@@ -59,9 +59,8 @@ class Controller
 
 public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
-		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
-		m_painter{m_window}
+		m_painter{m_window}//, m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 	{
 		m_painter.set_start_it(m_graph->begin());
 		m_painter.set_end_it(m_graph->end());
@@ -77,7 +76,7 @@ private:
 	sf::RenderWindow m_window;
 	Painter<Shape> m_painter;
 	sf::RectangleShape m_rect;
-	Colors m_color;
+	//Colors m_color;
 
 	std::shared_ptr<Graph<Shape>> m_graph;
 	std::unique_ptr<Enemy> m_enemy;
@@ -105,11 +104,11 @@ template<class Shape>
  template<class Shape>
  sf::Color Controller<Shape>::color_choosed(const unsigned int& x, const unsigned int& y)
  {
-	 sf::Color color_clicked = m_color.check_for_color(x, y);
+	 sf::Color color_clicked = m_painter.check_for_color(x, y);
 	 
 	 if (color_clicked != sf::Color::Transparent)
 	 {
-		 m_color.draw_x(color_clicked, one);
+		 m_painter.draw_x(color_clicked, one);
 		 m_graph->attach_nodes(color_clicked, Owner::Player);
 	 }
 		 
@@ -148,7 +147,7 @@ template<class Shape>
 			 m_graph->draw();
 			 m_painter.draw_graph();
 			 //m_window.draw(m_rect); // only for us
-			 m_color.drawMenu(m_window);
+			 //m_color.drawMenu(m_window);
 		 }
 		 m_window.display();
 		 
@@ -196,9 +195,8 @@ template<class Shape>
 			 comp_choice = m_enemy->action(player_choice);
 			 m_graph->unvisit_nodes();
 		 } while (comp_choice == sf::Color::Black);
-		 m_color.draw_x(comp_choice, two);
-		 m_graph->attach_nodes(comp_choice, Owner::Computer);
-				
+		 m_painter.draw_x(comp_choice, two);
+		 m_graph->attach_nodes(comp_choice, Owner::Computer);		
 	 }	 
  }
 
