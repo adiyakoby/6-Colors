@@ -6,18 +6,16 @@
 
 
 
-
 #if TEST == 0
 
 int main()
 {
 	using Shape_type = sf::CircleShape;
-	Shape_type my_shape(15.f, 6);
-	
+	Shape_type my_shape(10.f, 6);
 	Controller<Shape_type> control(my_shape);
 	control.run_game();
-	
-}
+
+};
 
 #endif // TEST == 0
 
@@ -91,7 +89,6 @@ int main()
 int main()
 {
 	srand(time(NULL));
-	srand(20);
 	sf::RenderWindow window(sf::VideoMode(800, 800), "TITLE");
 
 	sf::RectangleShape rectangle(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f));

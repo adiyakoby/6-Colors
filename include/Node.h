@@ -4,8 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <list>
+#include <algorithm>
 
-enum Owner { Natural, Computer, Player };
+
+
+enum class Owner { Natural, Computer, Player };
 
 template<class Shape>
 class Node
@@ -16,6 +19,7 @@ public:
 
 
 	//getters
+	sf::Color rand_color() const;
 	inline sf::Color get_color() const { return m_shape.getFillColor(); };
 	inline sf::Vector2f get_position() const { return m_shape.getPosition(); };
 	inline float getX() const { return m_shape.getPosition().x; };
@@ -24,9 +28,12 @@ public:
 	inline void draw(sf::RenderWindow& window) const { window.draw(m_shape); };
 	inline bool is_visited() const { return m_visited; };
 	inline Owner get_owner() const { return m_owner; };
+	bool find_Color(const sf::Color &color);
+	void get_neigh_colors(std::vector<sf::Color>& vec);
+	void count_neigh_colors(std::vector<int>& vec);
+	Shape& get_shape() { return m_shape; };
 
-	
-	
+
 	// setters
 	void set_color(const sf::Color& color) { m_shape.setFillColor(color); };
 	inline void set_position(const sf::Vector2f& pos) { m_shape.setPosition(pos); };
@@ -38,7 +45,7 @@ public:
 	//players func
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
 
-	
+
 	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
 	inline bool operator!=(const Node& other) const { return !(*this == other); };
@@ -49,9 +56,8 @@ private:
 	std::list<std::shared_ptr<Node<Shape>>> m_neighbors;
 	Owner m_owner;
 	bool m_visited;
-
+	
 	//private funcs:
-	sf::Color rand_color() const;
 
 };
 
@@ -59,7 +65,7 @@ private:
 
 
 template<class Shape>
-inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Natural), m_visited{false}
+inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Owner::Natural), m_visited{false}
 {
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
@@ -70,7 +76,7 @@ template<class Shape>
 inline bool Node<Shape>::set_owner(const Owner& type)
 {
 	if (m_owner == type) return true;
-	if (m_owner == Natural) {
+	if (m_owner == Owner::Natural) {
 		m_owner = type;
 		return true;
 	}
@@ -104,3 +110,69 @@ sf::Color Node<Shape>::rand_color() const {
 	else if (color == 4) return sf::Color::Cyan;
 	else return sf::Color::Magenta;
 };
+
+
+template<class Shape>
+bool Node<Shape>::find_Color(const sf::Color& color) {
+	m_visited = true;
+
+	for (auto& ea : m_neighbors)
+		if (ea->get_owner() == Owner::Natural && ea->get_color() == color)
+			return true;
+	
+	for (auto& ea : m_neighbors)
+		if (ea->get_owner() == Owner::Computer && !ea->is_visited())
+			if (ea->find_Color(color))
+				return true;
+
+	return false;
+}
+
+
+template<class Shape>
+void Node<Shape>::get_neigh_colors(std::vector<sf::Color>& vec) {
+
+	m_visited = true;
+
+	for (auto& ea : m_neighbors) 
+		if (ea->get_owner() == Owner::Natural)
+			if (std::find(vec.begin(), vec.end(), ea->get_color()) == vec.end())
+				vec.push_back(ea->get_color());
+
+	for (auto& ea : m_neighbors)
+		if (ea->get_owner() == Owner::Computer && !ea->is_visited())
+			ea->get_neigh_colors(vec);
+	
+}
+
+template<class Shape>
+void Node<Shape>::count_neigh_colors(std::vector<int>& vec) {
+
+	m_visited = true;
+
+	//sf::Color::Red, sf::Color::Magenta, sf::Color::Green,
+	//sf::Color::Blue, sf::Color::Yellow, sf::Color::Cyan
+
+	for (auto& ea : m_neighbors)
+	{
+		if (ea->get_owner() == Owner::Natural) {
+			sf::Color color= ea->get_color();
+
+			if (color == sf::Color::Red)
+				vec.at(0) += 1;
+			else if (color == sf::Color::Magenta)
+				vec.at(1) += 1;
+			else if (color == sf::Color::Green)
+				vec.at(2) += 1;
+			else if (color == sf::Color::Blue)
+				vec.at(3) += 1;
+			else if (color == sf::Color::Yellow)
+				vec.at(4) += 1;
+			else if (color == sf::Color::Cyan)
+				vec.at(5) += 1;
+		}
+		else if (ea->get_owner() == Owner::Computer && !ea->is_visited())
+			ea->count_neigh_colors(vec);
+	}
+}
+
