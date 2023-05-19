@@ -11,11 +11,31 @@ void Colors::setColors() {
 		m_buttons.at(i).setFillColor(arr[i]);
 }
 
+void Colors::draw_x(const sf::Color& color, const ttpe &type)
+{
 
+	int index{};
+	if (type == two)
+		index += 4;
+	
+	
+	for (auto& c : m_buttons)
+	{
+		if (c.getFillColor() == color)
+		{
+			c.setFillColor(sf::Color::Transparent);
+			m_lines[index].position = sf::Vector2f(c.getPosition().x - c.getGlobalBounds().width/2, c.getPosition().y - c.getGlobalBounds().height/2);
+			m_lines[index+1].position = sf::Vector2f(c.getPosition().x + c.getGlobalBounds().width / 2, c.getPosition().y + c.getGlobalBounds().height / 2);
+			m_lines[index+2].position = sf::Vector2f(c.getPosition().x + c.getGlobalBounds().width / 2, c.getPosition().y - c.getGlobalBounds().height / 2);
+			m_lines[index+3].position = sf::Vector2f(c.getPosition().x - c.getGlobalBounds().width / 2, c.getPosition().y + c.getGlobalBounds().height / 2);
+		}
+	}
+}
 
 void Colors::drawMenu( sf::RenderWindow& window) {
 	for (auto& ea : m_buttons)
 		window.draw(ea);
+	window.draw(m_lines);
 	
 }
 

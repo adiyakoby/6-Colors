@@ -9,7 +9,8 @@ public:
 	Enemy() = default;
 	virtual ~Enemy() = default;
 
-	virtual sf::Color action() = 0;
+	virtual sf::Color action(const sf::Color & player_color) = 0;
+	virtual sf::Color get_color()  = 0;
 private:
 
 };

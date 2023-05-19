@@ -138,11 +138,9 @@ void Node<Shape>::get_neigh_colors(std::vector<sf::Color>& vec) {
 		if (ea->get_owner() == Natural) 
 			if (std::find(vec.begin(), vec.end(), ea->get_color()) == vec.end())
 				vec.push_back(ea->get_color());
-			
-	if (vec.size() > 0) return;
 
 	for (auto& ea : m_neighbors)
-		if (vec.size() == 0 && ea->get_owner() == Computer && !ea->is_visited())
+		if (ea->get_owner() == Computer && !ea->is_visited())
 			ea->get_neigh_colors(vec);
 	
 }

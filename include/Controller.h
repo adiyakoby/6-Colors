@@ -62,8 +62,8 @@ public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
-		m_enemy{ std::make_unique<HardMode<Shape>>(m_graph->computer_begin()) },
-		m_painter{m_window}
+		m_enemy{ std::make_unique<EasyMode<Shape>>(m_graph->computer_begin()) },
+		m_painter{ m_window }
 		
 	{
 		m_painter.set_start_it(m_graph->begin());
@@ -74,13 +74,7 @@ public:
 	
 	void run_game();
 
-	void Test() {
-		auto it = m_graph->begin();
-		std::cout << (*it).getX() << std::endl;
-		++it;
-		std::cout << it->getX() << std::endl;
-
-	};
+	void Game_turns(const unsigned int& x, const unsigned int& y);
 	
 private:
 	sf::RenderWindow m_window;
@@ -93,7 +87,7 @@ private:
 
 	//private functions
 	sf::RectangleShape set_rect();
-	void color_choosed(const unsigned int& x, const unsigned int& y);
+	sf::Color color_choosed(const unsigned int& x, const unsigned int& y);
 	
 };
 
@@ -112,27 +106,36 @@ template<class Shape>
 }
 
  template<class Shape>
- inline void Controller<Shape>::color_choosed(const unsigned int& x, const unsigned int& y)
+ sf::Color Controller<Shape>::color_choosed(const unsigned int& x, const unsigned int& y)
  {
 	 sf::Color color_clicked = m_color.check_for_color(x, y);
-	 if (color_clicked != sf::Color::Black)
+	 
+	 if (color_clicked != sf::Color::Black && color_clicked != sf::Color::Transparent)
+	 {
+		 m_color.draw_x(color_clicked, one);
 		 m_graph->attach_nodes(color_clicked, Player);
+	 }
+		 
+	 return color_clicked;
  }
 
  template<class Shape>
  inline void Controller<Shape>::run_game()
  {
 	 //std::srand(26665656);
+	 bool menu{ false };
 
 	 while (m_window.isOpen()) {
 		 m_window.clear();
 
-		 //drawing
-		 //m_graph->draw();
-		 m_painter.draw_graph();
-		 //m_window.draw(m_rect); // only for us
-		 m_color.drawMenu(m_window);
+		 if (menu);
+		 else {
+			 //m_window.draw(m_rect); // only for debugging
+			 m_painter.draw_graph();
+			 m_color.drawMenu(m_window);
+		 }
 		 m_window.display();
+		 
 
 		 if (auto event = sf::Event{}; m_window.waitEvent(event))
 		 {
@@ -142,18 +145,36 @@ template<class Shape>
 				 m_window.close();
 				 break;
 			 }
+			 case sf::Event::Resized:
+			 {
+				// m_window.getViewport(m_window.getView());
+				 break;
+			 }
 
 			 case sf::Event::MouseButtonPressed:
-				 color_choosed(event.mouseButton.x, event.mouseButton.y);
-				 sf::Color comp_choice;
-				 do
-				 {
-					 comp_choice = m_enemy->action();
-					 m_graph->unvisit_nodes();
-				 } while (comp_choice == sf::Color::Black);
-				 m_graph->attach_nodes(comp_choice, Computer);
+				 Game_turns(event.mouseButton.x, event.mouseButton.y);
 				 break;
 			 }
 		 }
+	 }
+ }
+
+ template<class Shape>
+ inline void Controller<Shape>::Game_turns(const unsigned int &x, const unsigned int& y)
+ {
+	 m_color.setColors();
+	 //player turn
+	 sf::Color player_choice = color_choosed(x, y);
+
+	 //computer turn
+	 sf::Color comp_choice;
+	 if (player_choice != sf::Color::Black) {
+		 do
+		 {
+			 comp_choice = m_enemy->action(player_choice);
+			 m_graph->unvisit_nodes();
+		 } while (comp_choice == sf::Color::Black);
+		 m_color.draw_x(comp_choice, two);
+		 m_graph->attach_nodes(comp_choice, Computer);
 	 }
  }
