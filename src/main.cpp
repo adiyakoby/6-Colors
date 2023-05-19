@@ -14,6 +14,7 @@ int main()
 	Shape_type my_shape(10.f, 6);
 	Controller<Shape_type> control(my_shape);
 	control.run_game();
+	sf::RectangleShape s;
 };
 
 #endif // TEST == 0
