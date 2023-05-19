@@ -38,6 +38,13 @@ public:
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 	void attach_nodes(const sf::Color& color, const Owner& owner);
 
+	void print_neigh_size(const unsigned int& x, const unsigned int& y) {
+		for (auto& ea : m_map)
+		{
+			if (ea.second->get_shape().getGlobalBounds().contains({ (float)x, (float)y }))
+				std::cout << ea.second->get_size() << std::endl;
+		}
+	}
 
 
 	/* Custom iterator for the graph. */
@@ -169,7 +176,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		if (validation(temp, rectangle))
 		{
 			ptr = std::make_shared<Node<Shape>>(temp);
-			m_map.emplace(std::make_pair(ptr->getX(), ptr->getY()), ptr);
+			m_map.emplace(std::make_pair((ptr->getX()), (ptr->getY())), ptr);
 			if (m_map.size() > 0 && (m_computer_start.get() == nullptr || ptr->getY() > m_player_start->getY()))
 				m_player_start = ptr;	
 		}
@@ -213,7 +220,7 @@ inline std::list<std::shared_ptr<Node<Shape>>> Graph<Shape>::match_neighbors(std
 {
 	std::list<std::shared_ptr<Node<Shape>>> lst;
 	for (const auto& ea : loc) {
-		auto it = m_map.find(std::make_pair(ea.x, ea.y));
+		auto it = m_map.find(std::make_pair((ea.x), (ea.y)));
 		if (it != m_map.end())
 			lst.push_back(it->second);
 	}

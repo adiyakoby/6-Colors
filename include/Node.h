@@ -46,7 +46,7 @@ public:
 	//players func
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
 
-
+	int get_size() { return m_neighbors.size(); };
 	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
 	inline bool operator!=(const Node& other) const { return !(*this == other); };
@@ -70,6 +70,7 @@ inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Owner::Na
 {
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
+	std::cout << m_shape.getPosition().x << "  " << m_shape.getPosition().y << std::endl;
 }
 
 
@@ -95,21 +96,10 @@ inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_t
 		return;
 
 	for (auto& ea : m_neighbors)
-	{
-		if (!ea->is_visited() && (ea->get_owner() == owner_type || ea->get_color() == color && ea->set_owner(owner_type)))
-		{
+		if (!ea->is_visited() && ((ea->get_owner() == owner_type && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(owner_type))))
 			ea->find_nodes(color, owner_type);
-		}
-		else if (ea->is_visited() && ea->get_owner() == Owner::Natural && ea->get_color() == color) {
-			ea->set_owner(owner_type);
-			ea->find_nodes(color, owner_type);
-		}
-		
-	}
-		
-			//if (!ea->is_visited() && ((ea->get_owner() == owner_type && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(owner_type))))
+			
 	this->set_color(color);
-
 }
 
 

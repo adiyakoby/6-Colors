@@ -3,8 +3,8 @@
 #include "Colors.h"
 #include "Menu.h"
 
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 700;
+const int WINDOW_WIDTH = 600;
+const int WINDOW_HEIGHT = 600;
 
 template<class Shape>
 class Painter
