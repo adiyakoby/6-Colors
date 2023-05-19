@@ -110,7 +110,7 @@ template<class Shape>
  {
 	 sf::Color color_clicked = m_color.check_for_color(x, y);
 	 
-	 if (color_clicked != sf::Color::Black && color_clicked != sf::Color::Transparent)
+	 if (color_clicked != sf::Color::Transparent)
 	 {
 		 m_color.draw_x(color_clicked, one);
 		 m_graph->attach_nodes(color_clicked, Player);
@@ -162,13 +162,13 @@ template<class Shape>
  template<class Shape>
  inline void Controller<Shape>::Game_turns(const unsigned int &x, const unsigned int& y)
  {
-	 m_color.setColors();
+	 
 	 //player turn
 	 sf::Color player_choice = color_choosed(x, y);
 
 	 //computer turn
 	 sf::Color comp_choice;
-	 if (player_choice != sf::Color::Black) {
+	 if (player_choice != sf::Color::Transparent) {
 		 do
 		 {
 			 comp_choice = m_enemy->action(player_choice);

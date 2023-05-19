@@ -41,10 +41,12 @@ void Colors::drawMenu( sf::RenderWindow& window) {
 
 sf::Color Colors::check_for_color(const float& x, const float& y)
 {
+	sf::Color color_picked{ sf::Color::Transparent };
 	for (auto& ea : m_buttons)
 		if (ea.getGlobalBounds().contains(x, y))
-			return ea.getFillColor();
-	return sf::Color::Black;
+			color_picked = ea.getFillColor();
+	if(color_picked != sf::Color::Transparent) this->setColors();
+	return color_picked;
 }
 
 void Colors::create_vec()
