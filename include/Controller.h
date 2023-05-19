@@ -8,8 +8,7 @@
 #include "Painter.h"
 
 
-const int WINDOW_WIDTH = 600;
-const int WINDOW_HEIGHT = 600;
+
 
 std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float radius) {
 
@@ -62,6 +61,7 @@ public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
+		m_painter{m_window}
 		m_enemy{ std::make_unique<EasyMode<Shape>>(m_graph->computer_begin()) },
 		m_painter{ m_window }
 		
@@ -71,7 +71,7 @@ public:
 	};
 	~Controller () = default;
 
-	
+	void check_mode();
 	void run_game();
 
 	void Game_turns(const unsigned int& x, const unsigned int& y);
@@ -89,6 +89,7 @@ private:
 	sf::RectangleShape set_rect();
 	sf::Color color_choosed(const unsigned int& x, const unsigned int& y);
 	
+	void color_choosed(const unsigned int& x, const unsigned int& y);
 };
 
 
@@ -120,20 +121,39 @@ template<class Shape>
  }
 
  template<class Shape>
+ inline void Controller<Shape>::check_mode()
+{
+	 int choice = m_painter.get_mode();
+	 if (choice == 1) 
+		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph->computer_begin());
+	 else if(choice == 2)
+		m_enemy = std::make_unique<MedMode<Shape>>(m_graph->computer_begin());
+	 else if(choice == 3)
+		m_enemy = std::make_unique<HardMode<Shape>>(m_graph->computer_begin());
+}
+
+ template<class Shape>
  inline void Controller<Shape>::run_game()
  {
 	 //std::srand(26665656);
 	 bool menu{ false };
+	std::srand(26665656);
 
-	 while (m_window.isOpen()) {
+	bool menu{ true };
+	while (m_window.isOpen()) {
 		 m_window.clear();
 
-		 if (menu);
-		 else {
-			 //m_window.draw(m_rect); // only for debugging
-			 m_painter.draw_graph();
-			 m_color.drawMenu(m_window);
+		 if (menu)
+		 {
+			 m_painter.draw_menu(menu);
+			 check_mode();
 		 }
+	//	 //drawing
+		 m_window.draw(m_painter.getscreen());
+		 m_graph->draw();
+		 m_painter.draw_graph();
+		 //m_window.draw(m_rect); // only for us
+		 m_color.drawMenu(m_window);
 		 m_window.display();
 		 
 
@@ -176,5 +196,24 @@ template<class Shape>
 		 } while (comp_choice == sf::Color::Black);
 		 m_color.draw_x(comp_choice, two);
 		 m_graph->attach_nodes(comp_choice, Computer);
+				sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+				 if (m_painter.get_exit().getGlobalBounds().contains(mousePos))
+					 exit(EXIT_SUCCESS);
+				 else
+				 {
+					 color_choosed(event.mouseButton.x, event.mouseButton.y);
+					 sf::Color comp_choice;
+					 do
+					 {
+						 comp_choice = m_enemy->action();
+						 m_graph->unvisit_nodes();
+					 } while (comp_choice == sf::Color::Black);
+					 m_graph->attach_nodes(comp_choice, Computer);
+				 }
+				 break;
+			 }
+		 }
 	 }
  }
+
+

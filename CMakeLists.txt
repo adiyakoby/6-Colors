@@ -12,6 +12,7 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-fsanitize=a
 
 add_subdirectory (include)
 add_subdirectory (src)
+add_subdirectory (resources)
 
 
 include (cmake/Zip.cmake)
