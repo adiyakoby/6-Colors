@@ -77,25 +77,39 @@ template<class Shape>
 inline bool Node<Shape>::set_owner(const Owner& type)
 {
 	if (m_owner == type) return true;
+
 	if (m_owner == Owner::Natural) {
 		m_owner = type;
 		return true;
 	}
+
 	return false;
 }
 
 template<class Shape>
 inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
 {
+	std::cout << "in find nodes\n";
 	m_visited = true;
-	if (m_owner == owner_type)
+	if (m_owner == Owner::Natural)
+		return;
+
+	for (auto& ea : m_neighbors)
 	{
-		for (auto& ea : m_neighbors)
-			if (!ea->is_visited() && ((ea->get_owner() == owner_type && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(owner_type))))
-				ea->find_nodes(color, owner_type);
+		if (!ea->is_visited() && (ea->get_owner() == owner_type || ea->get_color() == color && ea->set_owner(owner_type)))
+		{
+			ea->find_nodes(color, owner_type);
+		}
+		else if (ea->is_visited() && ea->get_owner() == Owner::Natural && ea->get_color() == color) {
+			ea->set_owner(owner_type);
+			ea->find_nodes(color, owner_type);
+		}
 		
-		this->set_color(color);
 	}
+		
+			//if (!ea->is_visited() && ((ea->get_owner() == owner_type && ea->get_color() == this->get_color()) || (ea->get_color() == color && ea->set_owner(owner_type))))
+	this->set_color(color);
+
 }
 
 
