@@ -62,9 +62,6 @@ public:
 		m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
 		m_painter{m_window}
-		//m_enemy{ std::make_unique<EasyMode<Shape>>(m_graph->computer_begin()) },
-		//m_painter{ m_window }
-		
 	{
 		m_painter.set_start_it(m_graph->begin());
 		m_painter.set_end_it(m_graph->end());
@@ -89,7 +86,6 @@ private:
 	sf::RectangleShape set_rect();
 	sf::Color color_choosed(const unsigned int& x, const unsigned int& y);
 	
-	//void color_choosed(const unsigned int& x, const unsigned int& y);
 };
 
 
@@ -114,7 +110,7 @@ template<class Shape>
 	 if (color_clicked != sf::Color::Transparent)
 	 {
 		 m_color.draw_x(color_clicked, one);
-		 m_graph->attach_nodes(color_clicked, Player);
+		 m_graph->attach_nodes(color_clicked, Owner::Player);
 	 }
 		 
 	 return color_clicked;
@@ -201,7 +197,7 @@ template<class Shape>
 			 m_graph->unvisit_nodes();
 		 } while (comp_choice == sf::Color::Black);
 		 m_color.draw_x(comp_choice, two);
-		 m_graph->attach_nodes(comp_choice, Computer);
+		 m_graph->attach_nodes(comp_choice, Owner::Computer);
 				
 	 }	 
  }

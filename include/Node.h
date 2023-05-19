@@ -8,7 +8,7 @@
 
 
 
-enum Owner { Natural, Computer, Player };
+enum class Owner { Natural, Computer, Player };
 
 template<class Shape>
 class Node
@@ -65,7 +65,7 @@ private:
 
 
 template<class Shape>
-inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Natural), m_visited{false}
+inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Owner::Natural), m_visited{false}
 {
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
@@ -76,7 +76,7 @@ template<class Shape>
 inline bool Node<Shape>::set_owner(const Owner& type)
 {
 	if (m_owner == type) return true;
-	if (m_owner == Natural) {
+	if (m_owner == Owner::Natural) {
 		m_owner = type;
 		return true;
 	}
@@ -117,11 +117,11 @@ bool Node<Shape>::find_Color(const sf::Color& color) {
 	m_visited = true;
 
 	for (auto& ea : m_neighbors)
-		if (ea->get_owner() == Natural && ea->get_color() == color)
+		if (ea->get_owner() == Owner::Natural && ea->get_color() == color)
 			return true;
 	
 	for (auto& ea : m_neighbors)
-		if (ea->get_owner() == Computer && !ea->is_visited())
+		if (ea->get_owner() == Owner::Computer && !ea->is_visited())
 			if (ea->find_Color(color))
 				return true;
 
@@ -135,12 +135,12 @@ void Node<Shape>::get_neigh_colors(std::vector<sf::Color>& vec) {
 	m_visited = true;
 
 	for (auto& ea : m_neighbors) 
-		if (ea->get_owner() == Natural) 
+		if (ea->get_owner() == Owner::Natural)
 			if (std::find(vec.begin(), vec.end(), ea->get_color()) == vec.end())
 				vec.push_back(ea->get_color());
 
 	for (auto& ea : m_neighbors)
-		if (ea->get_owner() == Computer && !ea->is_visited())
+		if (ea->get_owner() == Owner::Computer && !ea->is_visited())
 			ea->get_neigh_colors(vec);
 	
 }
@@ -155,7 +155,7 @@ void Node<Shape>::count_neigh_colors(std::vector<int>& vec) {
 
 	for (auto& ea : m_neighbors)
 	{
-		if (ea->get_owner() == Natural) {
+		if (ea->get_owner() == Owner::Natural) {
 			sf::Color color= ea->get_color();
 
 			if (color == sf::Color::Red)
@@ -171,7 +171,7 @@ void Node<Shape>::count_neigh_colors(std::vector<int>& vec) {
 			else if (color == sf::Color::Cyan)
 				vec.at(5) += 1;
 		}
-		else if (ea->get_owner() == Computer && !ea->is_visited())
+		else if (ea->get_owner() == Owner::Computer && !ea->is_visited())
 			ea->count_neigh_colors(vec);
 	}
 }

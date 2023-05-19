@@ -104,15 +104,11 @@ inline Graph<Shape>::Graph(const Shape& shape, sf::RenderWindow& window, const s
 																						m_player_start{ nullptr }, 
 																						m_computer_start{ nullptr }
 {
-
-	std::srand(0);
-
 	this->make_Graph(shape, rectangle, dist_func);
 	this->connect_nodes(neighbors_func);
 
-	m_player_start->set_owner(Player);
-	m_computer_start->set_owner(Computer);
-
+	m_player_start->set_owner(Owner::Player);
+	m_computer_start->set_owner(Owner::Computer);
 };
 
 template<class Shape>
@@ -131,9 +127,9 @@ inline void Graph<Shape>::draw() const
 template<class Shape>
 inline void Graph<Shape>::attach_nodes(const sf::Color& color, const Owner& owner)
 {
-	if (owner == Player)
+	if (owner == Owner::Player)
 		m_player_start->find_nodes(color, owner);
-	else if (owner == Computer)
+	else if (owner == Owner::Computer)
 		m_computer_start->find_nodes(color, owner);
 
 	std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
