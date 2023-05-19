@@ -92,8 +92,8 @@ private:
 template<class Shape>
  sf::RectangleShape Controller<Shape>::set_rect()
 {
-	sf::RectangleShape rectangle(sf::Vector2f( WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f));
-	rectangle.setOrigin(rectangle.getSize() / 2.f);
+	sf::RectangleShape rectangle(sf::Vector2f( WINDOW_WIDTH * 0.7f, WINDOW_HEIGHT * 0.7f));
+	rectangle.setOrigin(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f);
 	rectangle.setFillColor(sf::Color::Transparent);
 	rectangle.setOutlineColor(sf::Color::White);
 	rectangle.setOutlineThickness(2.f);
@@ -186,7 +186,7 @@ template<class Shape>
  {
 	 //player turn
 	 sf::Color player_choice = color_choosed(x, y);
-
+	 
 	 //computer turn
 	 sf::Color comp_choice;
 	 if (player_choice != sf::Color::Transparent) {
