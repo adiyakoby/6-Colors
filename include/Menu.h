@@ -1,28 +1,30 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
+
+enum class menu_state { NONE, EASY, MEDIUM, HARD };
 
 class Menu
 {
 public:
 	Menu(int h,int w);
-	~Menu();
-	void draw(sf::RenderWindow &w, bool &menu);
-	sf::RectangleShape getscreen() { return m_screenrect; };
-	int get_choice() { return m_choice; };
-private:
-	sf::RectangleShape m_easyrect;
-	sf::RectangleShape m_mediumrect;
-	sf::RectangleShape m_hardrect;
-	sf::RectangleShape m_screenrect;
+	~Menu() = default;
 
-	sf::Texture m_easy;
-	sf::Texture m_medium;
-	sf::Texture m_hard;
-	sf::Texture m_screen;
+	void draw(sf::RenderWindow &window);
+	sf::RectangleShape getscreen() const { return m_modes.at(3); };
+	menu_state get_choice(const unsigned int& x, const unsigned int& y) ;
+
+private:
+	std::vector<sf::RectangleShape> m_modes;
+
+	std::vector<sf::Texture> m_images_vec;
+
 
 	int m_h;
 	int m_w;
 	int m_choice;
+
+	void set_textures();
 	void set_menu();
 
 };
