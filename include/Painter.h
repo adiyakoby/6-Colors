@@ -1,5 +1,5 @@
 #pragma
-#include "Graph.h"
+
 #include "Colors.h"
 #include "Menu.h"
 
@@ -23,13 +23,14 @@ public:
 	void draw_graph();
 	void draw_menu() { m_menu.draw(m_window); }
 	void draw_stats();
+	void update_stats(const float& player, const float& comp, const float& natural);
 
 	menu_state get_mode(const unsigned int &x, const unsigned int& y) { return m_menu.get_choice(x, y); };
 
 	sf::RectangleShape get_exit() { return m_exit; };
 
 	sf::Color check_for_color(const float& x, const float& y) { return m_colors.check_for_color(x, y); };
-	void draw_x(const sf::Color& color, const ttpe& type) { m_colors.draw_x(color, type); };
+	void draw_x(const sf::Color& color, const Owner& type) { m_colors.draw_x(color, type); };
 	void set_exit();
 	void set_text_vec();
 private:
@@ -76,6 +77,14 @@ void Painter<Shape> ::set_exit() {
 }
 
 template<class Shape>
+void Painter<Shape>::update_stats(const float &player, const float& comp, const float& natural) {
+	float total = player + comp + natural;
+
+	m_text_vec.at(2).setString(std::to_string(comp/total));
+	m_text_vec.at(3).setString(std::to_string(player/total));
+}
+
+template<class Shape>
 void Painter<Shape>::draw_stats()
 {
 	for (auto& ea : m_text_vec)
@@ -87,7 +96,7 @@ template<class Shape>
 void Painter<Shape>::set_text_vec() {
 	m_font.loadFromFile("Asul-Bold.ttf");
 
-	for (size_t i = 0; i < 2 ; i++)
+	for (size_t i = 0; i < 4 ; i++)
 	{
 		m_text_vec.emplace_back();
 		m_text_vec.back().setFont(m_font);
@@ -104,15 +113,15 @@ void Painter<Shape>::set_text_vec() {
 			m_text_vec.back().setString("Player:");
 			m_text_vec.back().setPosition(WINDOW_WIDTH * 0.8f, WINDOW_HEIGHT * 0.9f);
 		}
-		if (i == 2)
-		{
-			m_text_vec.back().setString(std::to_string(m_graph_start->get_ownership(Owner::Computer)));
-			m_text_vec.back().setPosition(WINDOW_WIDTH * 0.03f, WINDOW_HEIGHT * 0.95f);
+		if (i == 2) { // computer
+			m_text_vec.back().setString("1");
+			m_text_vec.back().setPosition(WINDOW_WIDTH * 0.05f, WINDOW_HEIGHT * 0.95f);
 		}
-		if (i == 3);
+		if (i == 3) { // player
+			m_text_vec.back().setString("1");
+			m_text_vec.back().setPosition(WINDOW_WIDTH * 0.82f, WINDOW_HEIGHT * 0.95f);
+		}
 
 	}
-	//std::cout << m_graph_start->get_ownership(Owner::Computer) << std::endl;
 
-//std::cout << m_graph_start->get_ownership(Owner::Player) << std::endl;
 }

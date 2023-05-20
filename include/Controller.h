@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Graph.h"
 #include "Colors.h"
 #include "EasyMode.h"
 #include "HardMode.h"
@@ -46,6 +45,7 @@ sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool& right, const 
 };
 
 
+enum class game_state {CONT, WON, LOST};
 
 template<class Shape>
 class Controller
@@ -63,6 +63,7 @@ public:
 
 	bool check_mode(const menu_state &state);
 	void run_game();
+	game_state get_stats();
 
 	void Game_turns(const unsigned int& x, const unsigned int& y);
 	
@@ -102,11 +103,32 @@ template<class Shape>
 	 
 	 if (color_clicked != sf::Color::Transparent)
 	 {
-		 m_painter.draw_x(color_clicked, one);
+		 m_painter.draw_x(color_clicked, Owner::Player);
 		 m_graph->attach_nodes(color_clicked, Owner::Player);
 	 }
 		 
 	 return color_clicked;
+ }
+ 
+ template<class Shape>
+ game_state Controller<Shape>::get_stats() {
+	 float player{}, comp{}, natural{};
+	 for (auto it = m_graph->begin() ; it != m_graph->end() ; it++)
+	 {
+		 if (it->get_owner() == Owner::Player)
+			 player++;
+		 else if (it->get_owner() == Owner::Computer)
+			 comp++;
+		 else if (it->get_owner() == Owner::Natural)
+			 natural++;
+	 }
+
+	 m_painter.update_stats(player, comp, natural);
+	 if (player >= 0.5f)
+		 return game_state::WON;
+	 else if (comp >= 0.5f)
+		 return game_state::LOST;
+	 else return game_state::CONT;
  }
 
  template<class Shape>
@@ -135,10 +157,8 @@ template<class Shape>
 		 m_window.clear();
 
 		 if (menu) m_painter.draw_menu();
-		 else {
-			 //m_graph->draw();
-			 m_painter.draw_graph();
-		 }
+		 else m_painter.draw_graph();
+		 
 		 m_window.display();
 		 
 
@@ -154,17 +174,15 @@ template<class Shape>
 
 			 case sf::Event::MouseButtonPressed:
 				 if (menu)
-				 {
 					 menu = check_mode(m_painter.get_mode(event.mouseButton.x, event.mouseButton.y));
-				 }
+				 
 				 else {
 					 if (m_painter.get_exit().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
 						 exit(EXIT_SUCCESS);
 					 m_graph->print_neigh_size(event.mouseButton.x, event.mouseButton.y);
 					 Game_turns(event.mouseButton.x, event.mouseButton.y);
 				 }
-				 
-				
+				 get_stats(); // update stats for painter
 				 break;
 				 
 			 }
@@ -181,12 +199,12 @@ template<class Shape>
 	 //computer turn
 	 sf::Color comp_choice;
 	 if (player_choice != sf::Color::Transparent) {
-		 do
+		 do 
 		 {
 			 comp_choice = m_enemy->action(player_choice);
 			 m_graph->unvisit_nodes();
 		 } while (comp_choice == sf::Color::Black);
-		 m_painter.draw_x(comp_choice, two);
+		 m_painter.draw_x(comp_choice, Owner::Computer);
 		 m_graph->attach_nodes(comp_choice, Owner::Computer);		
 	 }	 
  }

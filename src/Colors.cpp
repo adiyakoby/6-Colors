@@ -1,21 +1,21 @@
-
 #include "Colors.h"
+
 void Colors::setColors() {
 
 	m_frame.setFillColor(sf::Color::White);
 
-	sf::Color arr[6] = { sf::Color::Red, sf::Color::Magenta, sf::Color::Green, 
+	sf::Color arr[NUM_OF_COLORS] = { sf::Color::Red, sf::Color::Magenta, sf::Color::Green,
 						 sf::Color::Blue, sf::Color::Yellow, sf::Color::Cyan };
 
 	for (size_t i = 0; i < NUM_OF_COLORS; i++)
 		m_buttons.at(i).setFillColor(arr[i]);
 }
 
-void Colors::draw_x(const sf::Color& color, const ttpe &type)
+void Colors::draw_x(const sf::Color& color, const Owner &type)
 {
 
 	int index{};
-	if (type == two)
+	if (type == Owner::Computer)
 		index += 4;
 	
 	
