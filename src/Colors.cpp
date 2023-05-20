@@ -53,7 +53,7 @@ sf::Color Colors::check_for_color(const float& x, const float& y)
 void Colors::create_vec()
 {
 	auto x = m_width / 2;
-	auto y = m_height * 0.9;
+	auto y = m_height * 0.95;
 	m_buttons.reserve(NUM_OF_COLORS);
 	float delta{ 1.f };
 

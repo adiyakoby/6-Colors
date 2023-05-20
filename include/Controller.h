@@ -23,7 +23,6 @@ std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float &ra
 	all_neighbors.push_back(sf::Vector2f(pos.x - radius * (std::sqrt(3.f) / 2.f), pos.y - radius * 1.5f));
 
 	return all_neighbors;
-
 };
 
 
