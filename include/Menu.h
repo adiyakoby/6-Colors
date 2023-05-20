@@ -7,25 +7,23 @@ enum class menu_state { NONE, EASY, MEDIUM, HARD };
 class Menu
 {
 public:
-	Menu(int h,int w);
+	Menu(const int &width,const int &hight);
 	~Menu() = default;
 
 	void draw(sf::RenderWindow &window);
-	sf::RectangleShape getscreen() const { return m_modes.at(3); };
-	menu_state get_choice(const unsigned int& x, const unsigned int& y) ;
+	void draw_background(sf::RenderWindow& window) { window.draw(m_background); };
+
+	menu_state get_choice(const sf::Vector2f& pos) const ;
 
 private:
 	std::vector<sf::RectangleShape> m_modes;
-
 	std::vector<sf::Texture> m_images_vec;
+	sf::VertexArray m_background;
 
-
-	int m_h;
-	int m_w;
-	int m_choice;
-
+	//private funcs
+	void init_vertex(const int& width, const int& height);
 	void set_textures();
-	void set_menu();
+	void set_menu(const int& width, const int& hight);
 
 };
 

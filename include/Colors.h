@@ -1,8 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
-
-enum ttpe { one, two };
+#include "Node.h"
 
 const int NUM_OF_COLORS = 6;
 
@@ -14,13 +13,12 @@ public:
 	{
 		this->create_vec();
 		this->setColors();
-			
 	}
 	~Colors() = default;
 
-	void setColors();
+	
 	void draw_colors(sf::RenderWindow& w);
-	void draw_x(const sf::Color& color, const ttpe& type);
+	void draw_x(const sf::Color& color, const Owner& type);
 	sf::Color check_for_color(const float& x, const float& y);
 
 	
@@ -35,6 +33,7 @@ private:
 
 	//private funcs
 	void create_vec();
+	void setColors();
 	
 	
 
