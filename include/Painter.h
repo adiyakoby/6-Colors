@@ -16,6 +16,8 @@ public:
 		set_text_vec();
 	};
 	~Painter() = default;
+	bool is_new(const sf::Vector2f& pos);
+
 
 	void set_start_it(Graph<Shape>::GraphIterator it_start) { m_graph_start = it_start; };
 	void set_end_it(Graph<Shape>::GraphIterator it_end) { m_graph_end = it_end; };
@@ -27,7 +29,7 @@ public:
 	menu_state get_mode(const sf::Vector2f & pos) { return m_menu.get_choice(pos); };
 
 
-	sf::Color check_for_color(const float& x, const float& y) { return m_colors.check_for_color(x, y); };
+	sf::Color check_for_color(const float& x, const float& y);
 
 	void draw_x(const sf::Color& color, const Owner& type) { m_colors.draw_x(color, type); };
 	void set_text_vec();
@@ -61,6 +63,18 @@ inline void Painter<Shape>::draw_graph()
 	m_graph_start->un_visit();
 	//m_window.draw(m_exit);
 }
+template<class Shape>
+bool Painter<Shape>::is_new(const sf::Vector2f& pos) 
+{ 
+	if (m_text_vec.at(4).getGlobalBounds().contains(pos)) 
+		return true; 
+	return false; 
+};
+
+template<class Shape>
+sf::Color Painter<Shape>::check_for_color(const float& x, const float& y) {
+	return m_colors.check_for_color(x, y); 
+};
 
 
 template<class Shape>

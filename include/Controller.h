@@ -45,15 +45,15 @@ sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool& right, const 
 };
 
 
-enum class game_state {CONT, WON, LOST};
+enum class game_state {CONT, WON, LOST, NEW};
 
 template<class Shape>
 class Controller
 {
 
 public:
-	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
-		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
+	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() }, m_shape{shape},
+		m_graph(std::make_unique<Graph<Shape>>(shape, m_rect, neighbor_func, get_new_loc)),
 		m_painter{m_window}
 	{
 		m_painter.set_start_it(m_graph->begin());
@@ -61,24 +61,29 @@ public:
 	};
 	~Controller () = default;
 
-	bool check_mode(const menu_state &state);
+	
 	void run_game();
-	game_state get_stats();
-
-	void Game_turns(const unsigned int& x, const unsigned int& y);
+	
 	
 private:
+	sf::CircleShape m_shape;
 	sf::RenderWindow m_window;
 	Painter<Shape> m_painter;
 	sf::RectangleShape m_rect;
 	//Colors m_color;
 
-	std::shared_ptr<Graph<Shape>> m_graph;
+	std::unique_ptr<Graph<Shape>> m_graph;
 	std::unique_ptr<Enemy> m_enemy;
 
 	//private functions
 	sf::RectangleShape set_rect();
 	sf::Color color_choosed(const unsigned int& x, const unsigned int& y);
+	game_state get_stats();
+	void Game_turns(const unsigned int& x, const unsigned int& y);
+	bool check_mode(const menu_state& state);
+
+	game_state get_game_state(const sf::Vector2f& pos);
+	void re_init_game();
 	
 };
 
@@ -100,7 +105,7 @@ template<class Shape>
  sf::Color Controller<Shape>::color_choosed(const unsigned int& x, const unsigned int& y)
  {
 	 sf::Color color_clicked = m_painter.check_for_color(x, y);
-	 
+		
 	 if (color_clicked != sf::Color::Transparent)
 	 {
 		 m_painter.draw_x(color_clicked, Owner::Player);
@@ -176,16 +181,37 @@ template<class Shape>
 				 if (menu) 
 					 menu = check_mode(m_painter.get_mode(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })));
 				 
-				 else 
+				 else
+				 {
 					 Game_turns(event.mouseButton.x, event.mouseButton.y);
+
+					 game_state state{ get_game_state(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })) };
+					 switch (state)
+					 {
+					 case game_state::CONT: {  break; }
+					 case game_state::WON: {  break; }
+					 case game_state::LOST: {  break; }
+					 case game_state::NEW: { menu = true; re_init_game(); break; }
+					 default: break;
+					 }
+				 }
 				 
-				 get_stats(); // update stats for painter
+				 //get_stats(); 
 				 break;
 				 
 			 }
 		 }
 	 }
  }
+ template<class Shape>
+ game_state Controller<Shape>::get_game_state(const sf::Vector2f& pos)
+ {
+	 game_state state{ get_stats() };
+	 bool new_game{ m_painter.is_new(pos) };
+
+	 return (new_game ? game_state::NEW : state);
+ };
+
 
  template<class Shape>
  inline void Controller<Shape>::Game_turns(const unsigned int &x, const unsigned int& y)
@@ -207,3 +233,9 @@ template<class Shape>
  }
 
 
+ template<class Shape>
+ inline void Controller<Shape>::re_init_game()
+ {
+	 m_graph = Graph();
+	 m_graph->reset_graph(m_shape, m_rect);
+ }

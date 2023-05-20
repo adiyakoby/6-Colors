@@ -24,7 +24,7 @@ template<class Shape>
 class Graph
 {
 public:
-	Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle,
+	Graph(const Shape& shape, const sf::RectangleShape& rectangle,
 		std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func,
 		std::function <sf::Vector2f(Shape, bool, bool)> dist_func);
 
@@ -36,7 +36,11 @@ public:
 	void unvisit_nodes();
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 	void attach_nodes(const sf::Color& color, const Owner& owner);
-
+	void reset_graph(const Shape& shape, const sf::RectangleShape& rectangle) {
+		m_map.clear();
+		this->make_Graph(shape, rectangle, m_dist_func);
+		this->connect_nodes(m_neighbors_func);
+	};
 
 
 	/* Custom iterator for the graph. */
@@ -79,8 +83,10 @@ public:
 
 private:
 
-	sf::RenderWindow& m_ref_window;
 	graph_ds m_map; // our graph of nodes
+
+	std::function <std::vector<sf::Vector2f>(sf::Vector2f, float)> m_neighbors_func;
+	std::function <sf::Vector2f(Shape, bool, bool)> m_dist_func;
 
 	//players start nodes.
 	std::shared_ptr<Node<Shape>> m_player_start;
@@ -97,11 +103,13 @@ private:
 
 
 template<class Shape>
-inline Graph<Shape>::Graph(const Shape& shape, sf::RenderWindow& window, const sf::RectangleShape& rectangle, 
+Graph<Shape>::Graph(const Shape& shape, const sf::RectangleShape& rectangle, 
 							std::function<std::vector<sf::Vector2f>(sf::Vector2f, float)> neighbors_func, 
-							std::function<sf::Vector2f(Shape, bool, bool)> dist_func) : m_ref_window{ window },
+							std::function<sf::Vector2f(Shape, bool, bool)> dist_func) : 
 																						m_player_start{ nullptr }, 
-																						m_computer_start{ nullptr }
+																						m_computer_start{ nullptr },
+																						m_dist_func{ dist_func }, 
+																						m_neighbors_func{m_neighbors_func}
 {
 	this->make_Graph(shape, rectangle, dist_func);
 	this->connect_nodes(neighbors_func);
