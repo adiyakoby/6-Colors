@@ -37,13 +37,6 @@ public:
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 	void attach_nodes(const sf::Color& color, const Owner& owner);
 
-	void print_neigh_size(const unsigned int& x, const unsigned int& y) {
-		for (auto& ea : m_map)
-		{
-			if (ea.second->get_shape().getGlobalBounds().contains({ (float)x, (float)y }))
-				std::cout << ea.second->get_size() << std::endl;
-		}
-	}
 
 
 	/* Custom iterator for the graph. */

@@ -14,7 +14,6 @@ public:
 										
 	{
 		set_text_vec();
-		set_exit(); 
 	};
 	~Painter() = default;
 
@@ -27,9 +26,9 @@ public:
 
 	menu_state get_mode(const unsigned int &x, const unsigned int& y) { return m_menu.get_choice(x, y); };
 
-	sf::RectangleShape get_exit() { return m_exit; };
 
 	sf::Color check_for_color(const float& x, const float& y) { return m_colors.check_for_color(x, y); };
+
 	void draw_x(const sf::Color& color, const Owner& type) { m_colors.draw_x(color, type); };
 	void set_exit();
 	void set_text_vec();
@@ -64,17 +63,6 @@ inline void Painter<Shape>::draw_graph()
 	//m_window.draw(m_exit);
 }
 
-template<class Shape>
-void Painter<Shape> ::set_exit() {
-	if (!m_exitpng.loadFromFile("exit.png")) {
-		;	// Error handling if the image fails to load
-	}
-	m_exit.setTexture(&m_exitpng);
-	
-	m_exit.setSize(sf::Vector2f(WINDOW_WIDTH*0.1, WINDOW_HEIGHT *0.1));
-	m_exit.setPosition(0, 0);
-
-}
 
 template<class Shape>
 void Painter<Shape>::update_stats(const float &player, const float& comp, const float& natural) {
@@ -96,13 +84,13 @@ template<class Shape>
 void Painter<Shape>::set_text_vec() {
 	m_font.loadFromFile("Asul-Bold.ttf");
 
-	for (size_t i = 0; i < 4 ; i++)
+	for (size_t i = 0; i < 5 ; i++)
 	{
 		m_text_vec.emplace_back();
 		m_text_vec.back().setFont(m_font);
 		m_text_vec.back().setCharacterSize(20);
 		m_text_vec.back().setFillColor(sf::Color::White);
-		m_text_vec.back().setOrigin(m_text_vec.back().getGlobalBounds().width / 2, m_text_vec.back().getGlobalBounds().height / 2);
+		m_text_vec.back().setOrigin(m_text_vec.back().getGlobalBounds().width *0.5f , m_text_vec.back().getGlobalBounds().height * 0.5f);
 
 
 		if (i == 0) {
@@ -120,6 +108,10 @@ void Painter<Shape>::set_text_vec() {
 		if (i == 3) { // player
 			m_text_vec.back().setString("1");
 			m_text_vec.back().setPosition(WINDOW_WIDTH * 0.82f, WINDOW_HEIGHT * 0.95f);
+		}
+		if (i == 4) {
+			m_text_vec.back().setString("New Game");
+			m_text_vec.back().setPosition(WINDOW_WIDTH *0.45f, WINDOW_HEIGHT * 0.05f);
 		}
 
 	}

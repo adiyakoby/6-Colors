@@ -177,9 +177,6 @@ template<class Shape>
 					 menu = check_mode(m_painter.get_mode(event.mouseButton.x, event.mouseButton.y));
 				 
 				 else {
-					 if (m_painter.get_exit().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
-						 exit(EXIT_SUCCESS);
-					 m_graph->print_neigh_size(event.mouseButton.x, event.mouseButton.y);
 					 Game_turns(event.mouseButton.x, event.mouseButton.y);
 				 }
 				 get_stats(); // update stats for painter
