@@ -132,9 +132,9 @@ template<class Shape>
 	 float total{ player + comp + natural };
 
 	 m_painter.update_stats(player, comp, natural);
-	 if (player/total >= 0.1f)
+	 if (player/total >= 0.5f)
 		 return game_state::WON;
-	 else if (comp/total >= 0.1f)
+	 else if (comp/total >= 0.5f)
 		 return game_state::LOST;
 	 else return game_state::CONT;
  }
