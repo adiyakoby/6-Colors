@@ -24,15 +24,17 @@ public:
 	void draw_stats();
 	void update_stats(const float& player, const float& comp, const float& natural);
 
-	menu_state get_mode(const unsigned int &x, const unsigned int& y) { return m_menu.get_choice(x, y); };
+	menu_state get_mode(const sf::Vector2f & pos) { return m_menu.get_choice(pos); };
 
 
 	sf::Color check_for_color(const float& x, const float& y) { return m_colors.check_for_color(x, y); };
 
 	void draw_x(const sf::Color& color, const Owner& type) { m_colors.draw_x(color, type); };
-	void set_exit();
 	void set_text_vec();
+
+
 private:
+
 	Graph<Shape>::GraphIterator m_graph_start;
 	Graph<Shape>::GraphIterator m_graph_end;
 
@@ -40,12 +42,9 @@ private:
 
 	Menu m_menu;
 	Colors m_colors;
+
 	std::vector<sf::Text> m_text_vec;
 	sf::Font m_font;
-
-	sf::RectangleShape m_exit;
-	sf::Texture m_exitpng;
-
 
 };
 

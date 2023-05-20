@@ -11,7 +11,7 @@ public:
 	~Menu() = default;
 
 	void draw(sf::RenderWindow &window);
-	menu_state get_choice(const unsigned int& x, const unsigned int& y) ;
+	menu_state get_choice(const sf::Vector2f& pos) ;
 	void draw_background(sf::RenderWindow& window) { window.draw(m_background); };
 
 private:

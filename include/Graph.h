@@ -113,7 +113,6 @@ inline Graph<Shape>::Graph(const Shape& shape, sf::RenderWindow& window, const s
 template<class Shape>
 inline void Graph<Shape>::unvisit_nodes()
 {
-	//std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
 	m_computer_start->un_visit();
 	m_player_start->un_visit();
 };
@@ -131,7 +130,6 @@ inline void Graph<Shape>::attach_nodes(const sf::Color& color, const Owner& owne
 
 	m_computer_start->un_visit();
 	m_player_start->un_visit();
-	//std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->un_visit(); });
 };
 
 template<class Shape>

@@ -173,12 +173,12 @@ template<class Shape>
 
 
 			 case sf::Event::MouseButtonPressed:
-				 if (menu)
-					 menu = check_mode(m_painter.get_mode(event.mouseButton.x, event.mouseButton.y));
+				 if (menu) 
+					 menu = check_mode(m_painter.get_mode(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })));
 				 
-				 else {
+				 else 
 					 Game_turns(event.mouseButton.x, event.mouseButton.y);
-				 }
+				 
 				 get_stats(); // update stats for painter
 				 break;
 				 

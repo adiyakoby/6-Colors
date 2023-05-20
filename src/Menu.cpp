@@ -57,12 +57,12 @@ void Menu::draw(sf::RenderWindow& window) {
 }
 
 
-menu_state Menu::get_choice(const unsigned int& x, const unsigned int& y)
+menu_state Menu::get_choice(const sf::Vector2f & pos)
 {
 	for (size_t i = 0; i < 3; i++)
-		if (m_modes.at(i).getGlobalBounds().contains(x, y))
-			return static_cast<menu_state>(i);
-
+		if (m_modes.at(i).getGlobalBounds().contains(pos))
+			return static_cast<menu_state>(i+1);
+		
 	return menu_state::NONE;
 }
 
