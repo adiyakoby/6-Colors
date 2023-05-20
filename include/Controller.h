@@ -54,7 +54,7 @@ class Controller
 public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() }, m_shape{shape},
 		m_graph(std::make_unique<Graph<Shape>>(shape, m_rect, neighbor_func, get_new_loc)),
-		m_painter{m_window}
+		m_painter{ m_window }, m_game_state{game_state::CONT}
 	{
 		m_painter.set_start_it(m_graph->begin());
 		m_painter.set_end_it(m_graph->end());
@@ -132,9 +132,9 @@ template<class Shape>
 	 float total{ player + comp + natural };
 
 	 m_painter.update_stats(player, comp, natural);
-	 if (player/total >= 0.5f)
+	 if (player/total >= 0.1f)
 		 return game_state::WON;
-	 else if (comp/total >= 0.5f)
+	 else if (comp/total >= 0.1f)
 		 return game_state::LOST;
 	 else return game_state::CONT;
  }
@@ -159,6 +159,7 @@ template<class Shape>
  {
 	std::srand(time(NULL));
 	bool menu{ true };
+	get_stats(); // init stats
 
 	while (m_window.isOpen()) {
 		
@@ -184,6 +185,7 @@ template<class Shape>
 			 case sf::Event::MouseButtonPressed:
 				 if (menu)
 					 menu = check_mode(m_painter.get_mode(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })));
+				 
 				 else
 				 {
 					 if( m_game_state == game_state::CONT )Game_turns(event.mouseButton.x, event.mouseButton.y);
@@ -193,7 +195,7 @@ template<class Shape>
 					 {
 					 case game_state::CONT: {  break; }
 					 case game_state::WON: {break; }
-					 case game_state::LOST: { break; }
+					 case game_state::LOST: {break; }
 					 case game_state::NEW: { menu = true; re_init_game(); break; }
 					 default: break;
 					 }
@@ -242,4 +244,6 @@ template<class Shape>
 	 m_painter.set_start_it(m_graph->begin());
 	 m_painter.set_end_it(m_graph->end());
 	 m_game_state = game_state::CONT;
+	 m_painter.reset_game();
+	 get_stats();
  }

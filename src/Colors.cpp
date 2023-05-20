@@ -45,6 +45,7 @@ sf::Color Colors::check_for_color(const float& x, const float& y)
 	for (auto& ea : m_buttons)
 		if (ea.getGlobalBounds().contains(x, y))
 			color_picked = ea.getFillColor();
+
 	if(color_picked != sf::Color::Transparent) this->setColors();
 	return color_picked;
 }

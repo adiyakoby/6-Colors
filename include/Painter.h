@@ -13,14 +13,15 @@ template<class Shape>
 class Painter
 {
 public:
-	Painter(sf::RenderWindow& window) : m_menu(WINDOW_WIDTH, WINDOW_HEIGHT), m_colors(WINDOW_WIDTH, WINDOW_HEIGHT), m_window{ window }
-										
+	Painter(sf::RenderWindow& window) : m_menu(WINDOW_WIDTH, WINDOW_HEIGHT), m_colors(std::make_unique<Colors>(WINDOW_WIDTH, WINDOW_HEIGHT)), m_window{ window }								
 	{
 		set_text_vec();
 	};
 	~Painter() = default;
-	bool is_new(const sf::Vector2f& pos);
 
+
+	bool is_new(const sf::Vector2f& pos);
+	void reset_game();
 
 	void set_start_it(Graph<Shape>::GraphIterator it_start) { m_graph_start = it_start; };
 	void set_end_it(Graph<Shape>::GraphIterator it_end) { m_graph_end = it_end; };
@@ -31,10 +32,9 @@ public:
 
 	menu_state get_mode(const sf::Vector2f & pos) { return m_menu.get_choice(pos); };
 
-
 	sf::Color check_for_color(const float& x, const float& y);
 
-	void draw_x(const sf::Color& color, const Owner& type) { m_colors.draw_x(color, type); };
+	void draw_x(const sf::Color& color, const Owner& type) { m_colors->draw_x(color, type); };
 	
 	void print_victorious(const game_state & state);
 
@@ -46,7 +46,7 @@ private:
 	sf::RenderWindow& m_window;
 
 	Menu m_menu;
-	Colors m_colors;
+	std::unique_ptr<Colors> m_colors;
 
 	std::vector<sf::Text> m_text_vec;
 	sf::Font m_font;
@@ -57,9 +57,14 @@ private:
 };
 
 template<class Shape>
+inline void Painter<Shape>::reset_game()
+{
+	m_colors = std::make_unique<Colors>(WINDOW_WIDTH, WINDOW_HEIGHT);
+}
+
+template<class Shape>
 inline void Painter<Shape>::print_victorious(const game_state& state)
 {
-	std::cout << "inside print VICTO \n";
 	std::string who_won{};
 	if (state == game_state::WON) who_won = "Player Won !";
 	else if (state == game_state::LOST) who_won = "Computer Won !";
@@ -74,15 +79,14 @@ inline void Painter<Shape>::draw_graph(const game_state& state)
 	m_menu.draw_background(m_window);
 	for (auto it = m_graph_start; it != m_graph_end; it++)
 		m_window.draw(it->get_shape());
-	m_colors.draw_colors(m_window);
+
+	m_colors->draw_colors(m_window);
 	draw_stats();
+
 	if (state != game_state::CONT)
 		print_victorious(state);
 
-
-
 	m_graph_start->un_visit();
-	//m_window.draw(m_exit);
 }
 template<class Shape>
 bool Painter<Shape>::is_new(const sf::Vector2f& pos) 
@@ -94,7 +98,7 @@ bool Painter<Shape>::is_new(const sf::Vector2f& pos)
 
 template<class Shape>
 sf::Color Painter<Shape>::check_for_color(const float& x, const float& y) {
-	return m_colors.check_for_color(x, y); 
+	return m_colors->check_for_color(x, y); 
 };
 
 
