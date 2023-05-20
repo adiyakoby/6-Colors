@@ -182,8 +182,7 @@ void Graph<Shape>::make_Graph(const Shape& shape, const sf::RectangleShape& rect
 		}
 		
 		board_width -= temp.getGlobalBounds().width;
-		//if(m_map.size() > 0 && m_computer_start.get() == nullptr)
-			//m_player_start = ptr;
+
 
 		if (board_width <= 0)
 		{
@@ -209,7 +208,6 @@ inline void Graph<Shape>::connect_nodes(std::function <std::vector<sf::Vector2f>
 	{
 		std::vector<sf::Vector2f> neighb_location = neighbors_func(ea.second->get_position(), ea.second->get_radius()); // get possible neighbors
 		std::list<std::shared_ptr<Node<Shape>>> obj_negibors = match_neighbors(neighb_location); // get list of neigbors
-		std::cout << "list size is : " << obj_negibors.size() << std::endl;
 		ea.second->set_neighbors(obj_negibors); // connect neighbors
 	}
 }

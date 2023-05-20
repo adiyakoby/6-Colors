@@ -11,8 +11,8 @@ public:
 	~Menu() = default;
 
 	void draw(sf::RenderWindow &window);
-	sf::RectangleShape getscreen() const { return m_modes.at(0); };
 	menu_state get_choice(const unsigned int& x, const unsigned int& y) ;
+	void draw_background(sf::RenderWindow& window) { window.draw(m_background); };
 
 private:
 	std::vector<sf::RectangleShape> m_modes;

@@ -26,7 +26,6 @@ public:
 
 	menu_state get_mode(const unsigned int &x, const unsigned int& y) { return m_menu.get_choice(x, y); };
 
-	sf::RectangleShape getscreen() { return m_menu.getscreen(); };
 	sf::RectangleShape get_exit() { return m_exit; };
 
 	sf::Color check_for_color(const float& x, const float& y) { return m_colors.check_for_color(x, y); };
@@ -53,6 +52,7 @@ private:
 template<class Shape>
 inline void Painter<Shape>::draw_graph()
 {
+	m_menu.draw_background(m_window);
 	for (auto it = m_graph_start; it != m_graph_end; it++)
 		m_window.draw(it->get_shape());
 	m_colors.draw_colors(m_window);

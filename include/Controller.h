@@ -10,7 +10,7 @@
 
 
 
-std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float radius) {
+std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float &radius) {
 
 	std::vector<sf::Vector2f> all_neighbors;
 	//left and right
@@ -23,11 +23,6 @@ std::vector<sf::Vector2f> neighbor_func(const sf::Vector2f& pos, const float rad
 	all_neighbors.push_back(sf::Vector2f(pos.x + radius * (std::sqrt(3.f) / 2.f), pos.y - radius * 1.5f));
 	all_neighbors.push_back(sf::Vector2f(pos.x - radius * (std::sqrt(3.f) / 2.f), pos.y - radius * 1.5f));
 
-	for (auto& ea : all_neighbors) {
-		ea.x = (ea.x);
-		ea.y = (ea.y);
-	}
-
 	return all_neighbors;
 
 };
@@ -37,7 +32,7 @@ sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool& right, const 
 
 	sf::Vector2f ret_pos{ shape.getPosition() };
 	if (!down)
-		ret_pos.x = (ret_pos.x + 2.f * shape.getRadius() * (std::sqrt(3.f) / 2.f));
+		ret_pos.x = (ret_pos.x +  shape.getRadius() * std::sqrt(3.f));
 	else if (down)
 	{
 		ret_pos.y = (ret_pos.y + ( shape.getRadius() * 1.5f));
@@ -48,7 +43,6 @@ sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool& right, const 
 
 	}
 	return ret_pos;
-
 };
 
 
@@ -142,12 +136,8 @@ template<class Shape>
 
 		 if (menu) m_painter.draw_menu();
 		 else {
-
-			 //m_window.draw(m_painter.getscreen());
 			 m_graph->draw();
 			 m_painter.draw_graph();
-			 //m_window.draw(m_rect); // only for us
-			 //m_color.drawMenu(m_window);
 		 }
 		 m_window.display();
 		 
@@ -168,7 +158,6 @@ template<class Shape>
 					 menu = check_mode(m_painter.get_mode(event.mouseButton.x, event.mouseButton.y));
 				 }
 				 else {
-					 std::cout << "clicked on : X:" << event.mouseButton.x << " Y : " << event.mouseButton.y << std::endl;
 					 if (m_painter.get_exit().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
 						 exit(EXIT_SUCCESS);
 					 m_graph->print_neigh_size(event.mouseButton.x, event.mouseButton.y);

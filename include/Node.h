@@ -70,7 +70,6 @@ inline Node<Shape>::Node(const Shape& shape) : m_shape(shape), m_owner(Owner::Na
 {
 	m_shape.setFillColor(rand_color());
 	m_shape.setOrigin(m_shape.getGlobalBounds().width/2, m_shape.getGlobalBounds().height/2);
-	std::cout << m_shape.getPosition().x << "  " << m_shape.getPosition().y << std::endl;
 }
 
 
@@ -90,7 +89,6 @@ inline bool Node<Shape>::set_owner(const Owner& type)
 template<class Shape>
 inline void Node<Shape>::find_nodes(const sf::Color& color, const Owner &owner_type)
 {
-	std::cout << "in find nodes\n";
 	m_visited = true;
 	if (m_owner == Owner::Natural)
 		return;
