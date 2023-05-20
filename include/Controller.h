@@ -45,7 +45,7 @@ sf::Vector2f get_new_loc(const sf::CircleShape& shape, const bool& right, const 
 };
 
 
-enum class game_state {CONT, WON, LOST, NEW};
+
 
 template<class Shape>
 class Controller
@@ -74,6 +74,8 @@ private:
 
 	std::unique_ptr<Graph<Shape>> m_graph;
 	std::unique_ptr<Enemy> m_enemy;
+
+	game_state m_game_state;
 
 	//private functions
 	sf::RectangleShape set_rect();
@@ -127,11 +129,12 @@ template<class Shape>
 		 else if (it->get_owner() == Owner::Natural)
 			 natural++;
 	 }
+	 float total{ player + comp + natural };
 
 	 m_painter.update_stats(player, comp, natural);
-	 if (player >= 0.5f)
+	 if (player/total >= 0.5f)
 		 return game_state::WON;
-	 else if (comp >= 0.5f)
+	 else if (comp/total >= 0.5f)
 		 return game_state::LOST;
 	 else return game_state::CONT;
  }
@@ -141,7 +144,7 @@ template<class Shape>
  {
 	if(state == menu_state::EASY)
 		m_enemy = std::make_unique<EasyMode<Shape>>(m_graph->computer_begin());
-
+	
 	else if (state == menu_state::MEDIUM )
 		m_enemy = std::make_unique<MedMode<Shape>>(m_graph->computer_begin());
 
@@ -158,11 +161,12 @@ template<class Shape>
 	bool menu{ true };
 
 	while (m_window.isOpen()) {
+		
 
 		 m_window.clear();
 
 		 if (menu) m_painter.draw_menu();
-		 else m_painter.draw_graph();
+		 else m_painter.draw_graph(m_game_state);
 		 
 		 m_window.display();
 		 
@@ -178,25 +182,23 @@ template<class Shape>
 
 
 			 case sf::Event::MouseButtonPressed:
-				 if (menu) 
+				 if (menu)
 					 menu = check_mode(m_painter.get_mode(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })));
-				 
 				 else
 				 {
-					 Game_turns(event.mouseButton.x, event.mouseButton.y);
+					 if( m_game_state == game_state::CONT )Game_turns(event.mouseButton.x, event.mouseButton.y);
 
-					 game_state state{ get_game_state(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })) };
-					 switch (state)
+					 m_game_state = get_game_state(m_window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y })) ;
+					 switch (m_game_state)
 					 {
 					 case game_state::CONT: {  break; }
-					 case game_state::WON: {  break; }
-					 case game_state::LOST: {  break; }
+					 case game_state::WON: {break; }
+					 case game_state::LOST: { break; }
 					 case game_state::NEW: { menu = true; re_init_game(); break; }
 					 default: break;
 					 }
 				 }
 				 
-				 //get_stats(); 
 				 break;
 				 
 			 }
@@ -236,6 +238,8 @@ template<class Shape>
  template<class Shape>
  inline void Controller<Shape>::re_init_game()
  {
-	 m_graph = Graph();
-	 m_graph->reset_graph(m_shape, m_rect);
+	 m_graph = std::make_unique<Graph<Shape>>(m_shape, m_rect, neighbor_func, get_new_loc);
+	 m_painter.set_start_it(m_graph->begin());
+	 m_painter.set_end_it(m_graph->end());
+	 m_game_state = game_state::CONT;
  }

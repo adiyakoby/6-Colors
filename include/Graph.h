@@ -30,12 +30,25 @@ public:
 
 	~Graph() = default;
 
+	Graph& operator=(const Graph& other) {
+		if (this != &other) {
+			m_map = other.m_map;
+			m_player_start = other.m_player_start;
+			m_computer_start = other.m_computer_start;
+			m_neighbors_func = other.m_neighbors_func;
+			m_dist_func = other.m_dist_func;
+		}
+		return *this;
+	};
+	
+
 	//using
 	using graph_ds = std::unordered_map <std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash>;
 
 	void unvisit_nodes();
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 	void attach_nodes(const sf::Color& color, const Owner& owner);
+
 	void reset_graph(const Shape& shape, const sf::RectangleShape& rectangle) {
 		m_map.clear();
 		this->make_Graph(shape, rectangle, m_dist_func);
@@ -117,6 +130,7 @@ Graph<Shape>::Graph(const Shape& shape, const sf::RectangleShape& rectangle,
 	m_player_start->set_owner(Owner::Player);
 	m_computer_start->set_owner(Owner::Computer);
 };
+
 
 template<class Shape>
 inline void Graph<Shape>::unvisit_nodes()

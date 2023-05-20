@@ -12,7 +12,6 @@ public:
 
 	virtual sf::Color action(const sf::Color& player_color) override ;
 	virtual sf::Color get_color()  override { return m_comp_node->get_color(); };
-	
 private:
 	Graph<Shape>::GraphIterator m_comp_node;
 };
