@@ -34,7 +34,6 @@ public:
 	using graph_ds = std::unordered_map <std::pair<float, float>, std::shared_ptr<Node<Shape>>, pairhash>;
 
 	void unvisit_nodes();
-	inline void draw() const;
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 	void attach_nodes(const sf::Color& color, const Owner& owner);
 
@@ -126,11 +125,7 @@ inline void Graph<Shape>::unvisit_nodes()
 	m_player_start->un_visit();
 };
 
-template<class Shape>
-inline void Graph<Shape>::draw() const
-{
-	std::ranges::for_each(m_map.begin(), m_map.end(), [&](const auto& ea) {ea.second->draw(m_ref_window); });
-};
+
 
 
 template<class Shape>

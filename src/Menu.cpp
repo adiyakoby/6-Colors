@@ -10,7 +10,7 @@ Menu::Menu(const int& width, const int& height) : m_modes{}, m_background(sf::Qu
 
 void Menu::init_vertex(const int& width, const int& height) {
 	
-	m_background[0].position = sf::Vector2f(0, 0); // 100 100
+	m_background[0].position = sf::Vector2f(0, 0);
 	m_background[1].position = sf::Vector2f(width, 0);
 	m_background[2].position = sf::Vector2f(width, height);
 	m_background[3].position = sf::Vector2f(0, height);

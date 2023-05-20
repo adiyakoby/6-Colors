@@ -54,7 +54,7 @@ class Controller
 public:
 	Controller(const Shape& shape) : m_window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SixColors" }, m_rect{ set_rect() },
 		m_graph(std::make_shared<Graph<Shape>>(shape, m_window, m_rect, neighbor_func, get_new_loc)),
-		m_painter{m_window}//, m_color(WINDOW_WIDTH, WINDOW_HEIGHT),
+		m_painter{m_window}
 	{
 		m_painter.set_start_it(m_graph->begin());
 		m_painter.set_end_it(m_graph->end());
@@ -136,7 +136,7 @@ template<class Shape>
 
 		 if (menu) m_painter.draw_menu();
 		 else {
-			 m_graph->draw();
+			 //m_graph->draw();
 			 m_painter.draw_graph();
 		 }
 		 m_window.display();

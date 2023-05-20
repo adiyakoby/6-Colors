@@ -10,8 +10,8 @@ template<class Shape>
 class Painter
 {
 public:
-	Painter(sf::RenderWindow& window) : m_window{ window }, m_menu(WINDOW_WIDTH, WINDOW_HEIGHT)
-										, m_colors(WINDOW_WIDTH, WINDOW_HEIGHT)
+	Painter(sf::RenderWindow& window) : m_menu(WINDOW_WIDTH, WINDOW_HEIGHT), m_colors(WINDOW_WIDTH, WINDOW_HEIGHT), m_window{ window }
+										
 	{
 		set_text_vec();
 		set_exit(); 
