@@ -31,11 +31,9 @@ public:
 	void update_stats(const float& player, const float& comp, const float& natural);
 
 	menu_state get_mode(const sf::Vector2f & pos) { return m_menu.get_choice(pos); };
-
 	sf::Color check_for_color(const float& x, const float& y);
 
 	void draw_x(const sf::Color& color, const Owner& type) { m_colors->draw_x(color, type); };
-	
 	void print_victorious(const game_state & state);
 
 private:

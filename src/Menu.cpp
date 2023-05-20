@@ -57,7 +57,7 @@ void Menu::draw(sf::RenderWindow& window) {
 }
 
 
-menu_state Menu::get_choice(const sf::Vector2f & pos)
+menu_state Menu::get_choice(const sf::Vector2f & pos) const
 {
 	for (size_t i = 0; i < 3; i++)
 		if (m_modes.at(i).getGlobalBounds().contains(pos))

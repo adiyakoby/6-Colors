@@ -31,8 +31,7 @@ public:
 	bool find_Color(const sf::Color &color);
 	void get_neigh_colors(std::vector<sf::Color>& vec);
 	void count_neigh_colors(std::vector<int>& vec);
-	Shape& get_shape() { return m_shape; };
-	float get_ownership(const Owner& owner_type);
+	Shape& get_shape() {return m_shape; };
 
 
 	// setters
@@ -47,6 +46,7 @@ public:
 	void find_nodes(const sf::Color& color ,const Owner& owner_type);
 
 	int get_size() { return m_neighbors.size(); };
+
 	//operator overloading
 	inline bool operator==(const Node& other) const { return *this == other; };
 	inline bool operator!=(const Node& other) const { return !(*this == other); };
@@ -58,7 +58,7 @@ private:
 	Owner m_owner;
 	bool m_visited;
 	
-	//private funcs:
+	//private funcs: NONE
 
 };
 
@@ -178,18 +178,7 @@ void Node<Shape>::count_neigh_colors(std::vector<int>& vec) {
 	}
 }
 
-template<class Shape>
-float Node<Shape>::get_ownership(const Owner& owner_type) {
-	m_visited = true;
-	float count{};
 
-	for (auto& ea : m_neighbors) 
-		if(ea->is_visited() == false)
-			count += ea->get_ownership(owner_type) ;
-
-	return (m_owner == owner_type ? count + 1 : count);		
-
-}
 
 template<class Shape>
 void Node<Shape>::un_visit() {

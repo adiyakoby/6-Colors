@@ -49,12 +49,6 @@ public:
 	inline std::shared_ptr<Node<Shape>>get_comp_node() { return m_computer_start; };
 	void attach_nodes(const sf::Color& color, const Owner& owner);
 
-	void reset_graph(const Shape& shape, const sf::RectangleShape& rectangle) {
-		m_map.clear();
-		this->make_Graph(shape, rectangle, m_dist_func);
-		this->connect_nodes(m_neighbors_func);
-	};
-
 
 	/* Custom iterator for the graph. */
 	class GraphIterator {
