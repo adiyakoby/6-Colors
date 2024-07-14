@@ -17,7 +17,7 @@ add_subdirectory (resources)
 
 include (cmake/Zip.cmake)
 
-set (SFML_LOCATION "C:/SFML/SFML-2.5.1")
+set (SFML_LOCATION "C:/Program Files/SFML-2.5.1")
 set (SFML_DIR "${SFML_LOCATION}/lib/cmake/SFML")
 
 find_package (SFML 2.5 COMPONENTS graphics REQUIRED)
