@@ -41,11 +41,6 @@ The player who controls the most tiles by the end of the game wins. The challeng
 - **Adi Yakoby** - [GitHub](https://github.com/adiyakoby)
 - **Ron Elian** - [GitHub](https://github.com/ronelian)
 
-## Screenshots
-
-![Gameplay Screenshot 1](path_to_screenshot1) <!-- Add paths to your screenshots here -->
-![Gameplay Screenshot 2](path_to_screenshot2)
-![Gameplay Screenshot 3](path_to_screenshot3)
 
 ## License
 
