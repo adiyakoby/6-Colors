@@ -21,12 +21,6 @@ The player who controls the most tiles by the end of the game wins. The challeng
 - **Dynamic Board:** Each game is different with a randomly generated board, ensuring endless replayability.
 - **Statistics Tracking:** Keep track of your wins, losses, and overall progress.
 
-## Technologies Used
-
-- **JavaScript:** Core game logic and interactivity.
-- **HTML5:** Structure and layout of the game interface.
-- **CSS3:** Styling and visual presentation.
-- **WebSocket:** Real-time multiplayer functionality.
 
 ## How to Play
 
